@@ -10,7 +10,13 @@ To build the code run the gradle wrapper: `./gradlew build` for UNIX systems and
 
 Intellij, by default, works with gradle, which means that all that is required, is to open the directory using `File->Open`.
 
+You can probably used the default suggested configuration, so simply accept it and let Intellij open the project.
+
 Aftering opening the directory, Intellij will automatically sync with gradle. Once finished, you will be able to start working.
+
+## Version
+
+Because of the gradle version used, it is required to use at least Intellij IDEA `version 2018.3.2`.
 
 ## Configurating FlashLib with Sources and Javadoc
 
