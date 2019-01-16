@@ -14,6 +14,14 @@ You can probably used the default suggested configuration, so simply accept it a
 
 Aftering opening the directory, Intellij will automatically sync with gradle. Once finished, you will be able to start working.
 
+# Configuring with VS Code
+
+All the instructions for installing and setupping on WPI lib site by the link below :
+http://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc
+
+Then you need to open the directory using `File->Open Folder...`
+and after openning the directory try running Gradle build command to check if you miss anything by pressing `Ctrl+Shift+P`typing `>WPILib: Run a command in Gradle` and then typing `build`
+
 ## Version
 
 Because of the gradle version used, it is required to use at least Intellij IDEA `version 2018.3.2`.

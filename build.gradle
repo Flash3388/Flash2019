@@ -55,7 +55,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    compile name: 'flashlib'
+    compile files('/home/daniel/Documents/flashlib.jar')
 
     testCompile 'junit:junit:4.12'
 }
