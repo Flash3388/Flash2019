@@ -12,7 +12,6 @@ import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 
-//yoni was here
 public class Robot extends IterativeFRCRobot {
 
 	@Override
