@@ -11,9 +11,12 @@ import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.ClimbingSystem;
 
 
 public class Robot extends IterativeFRCRobot {
+
+	public static ClimbingSystem climb;
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
@@ -22,6 +25,7 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void initRobot() {
+		climb = new ClimbingSystem();
         RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
     }
 
