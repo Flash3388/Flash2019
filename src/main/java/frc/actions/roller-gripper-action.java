@@ -17,7 +17,6 @@ public class RollerGripperAction extends Action {
 		Robot.rollerGripper.capture(speed);
 	}
 
-//hello
 	@Override
 	protected void end() {
 		Robot.rollerGripper.stop();
