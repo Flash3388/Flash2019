@@ -11,17 +11,15 @@ import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.subsystems.RollerGripper;
 
 public class Robot extends IterativeFRCRobot {
-
-	@Override
-	protected void preInit(RobotInitializer initializer) {
-		initializer.initFlashboard = false;
-	}
+	public static RollerGripper rollerGripper;
 
 	@Override
 	protected void initRobot() {
-        RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+		rollerGripper = new RollerGripper(7);
     }
 
 	@Override
