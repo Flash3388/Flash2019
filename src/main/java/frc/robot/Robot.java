@@ -1,29 +1,20 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-import edu.flash3388.flashlib.FRCHIDInterface;
-import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
-import edu.wpi.first.wpilibj.DriverStation;
-
+import edu.wpi.first.wpilibj.Joystick;
+import frc.Subsystem.LiftSystem;
 
 public class Robot extends IterativeFRCRobot {
-
-	@Override
-	protected void preInit(RobotInitializer initializer) {
-		initializer.initFlashboard = false;
-	}
+	public static LiftSystem liftSystem;
+	public static Joystick rightStick;
+	public static Joystick leftStick;
 
 	@Override
 	protected void initRobot() {
-        RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
-    }
+		liftSystem = new LiftSystem(5, 6, 2,4,5);
+		rightStick = new Joystick(0);
+		leftStick = new Joystick(1);
+	}
 
 	@Override
 	protected void disabledInit() {
