@@ -11,9 +11,11 @@ import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.Subsystem.HatchSystem;
 
 
 public class Robot extends IterativeFRCRobot {
+	public static HatchSystem hatchSystem;
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
