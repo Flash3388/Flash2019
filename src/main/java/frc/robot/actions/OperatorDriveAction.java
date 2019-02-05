@@ -2,33 +2,40 @@ package frc.robot.actions;
 
 
 import edu.flash3388.flashlib.robot.Action;
+import frc.robot.Robot;
 
 public class OperatorDriveAction extends Action {
-    private double rightSpeed;
-    private double leftSpeed;
+    private final double MIN = -0.12;
+    private final double MAX = 0.12;
 
-    public OperatorDriveAction(double rightSpeed, double leftSpeed){
-        this.rightSpeed = rightSpeed;
-        this.leftSpeed = leftSpeed;
-
-       // requires(Robot.driveTrain); misha al tishkah et ze!!!!!!!!!!!!!
-
+    public OperatorDriveAction(){
+        requires(Robot.driveTrain);
     }
 
-    protected void initiallize(){
-        this.rightSpeed = 0.35;
-        this.leftSpeed = 0.35;
+    protected void initiallize() {
+        Robot.driveTrain.stop();
     }
 
     @Override
     protected void execute() {
-        initiallize();
+        double left = Robot.leftStick.getY();
+        double right = Robot.rightStick.getY();
+
+        if(!inBounds(right, MIN, MAX))
+            right = 0;
+        
+        if (!inBounds(left, MIN, MAX))
+            left = 0;
+        
+        Robot.driveTrain.tankDrive(right, left);
     }
 
     @Override
     protected void end() {
-        this.rightSpeed = 0;
-        this.leftSpeed = 0;
+        Robot.driveTrain.stop();
+    }
 
+    private boolean inBounds(double val, double min, double max) {
+        return val <= min || val >= max;
     }
 }
