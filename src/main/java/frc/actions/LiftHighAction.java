@@ -10,16 +10,12 @@ public class LiftHighAction extends Action {
     }
 
     @Override
-    protected void initialize() {
-        Robot.liftSystem.rotate(LiftSystem.LIFT_SPEED);
-    }
-
-    @Override
     protected void end() {
     }
 
     @Override
     protected void execute() {
+        Robot.liftSystem.rotate(LiftSystem.LIFT_SPEED);
     }
 
     @Override
