@@ -1,8 +1,8 @@
-package frc.robot.actions;
+package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
-import frc.robot.subsystems.DriveSystem;
+import frc.subsystems.DriveSystem;
 
 public class OperatorDriveAction extends Action {
     private final double MIN = -0.12;

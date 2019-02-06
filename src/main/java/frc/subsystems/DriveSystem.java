@@ -1,11 +1,11 @@
-package frc.robot.subsystems;
+package frc.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
 import edu.flash3388.flashlib.robot.systems.TankDriveSystem;
-import frc.robot.actions.OperatorDriveAction;
+import frc.actions.OperatorDriveAction;
 
 public class DriveSystem extends Subsystem implements TankDriveSystem {
     private final double WHEEL_RADIUS = 10.16;

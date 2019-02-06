@@ -2,8 +2,7 @@ package frc.robot;
 
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.subsystems.DriveSystem;
-
+import frc.subsystems.DriveSystem;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
