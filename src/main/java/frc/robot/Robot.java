@@ -24,6 +24,7 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void initRobot() {
+		hatchSystem = new HatchSystem(0, 1);
         RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
     }
 
