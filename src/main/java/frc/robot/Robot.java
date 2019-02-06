@@ -12,7 +12,7 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void initRobot() {
-		driveTrain = new DriveSystem(0, 1, 2, 3);
+		driveTrain = new DriveSystem(0, 1, 2, 3,4);
 		rightStick = new Joystick(0);
 		leftStick = new Joystick(1);
 	}

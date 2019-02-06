@@ -1,8 +1,8 @@
 package frc.robot.actions;
 
-
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
+import frc.robot.subsystems.DriveSystem;
 
 public class OperatorDriveAction extends Action {
     private final double MIN = -0.12;
@@ -21,10 +21,10 @@ public class OperatorDriveAction extends Action {
         double left = Robot.leftStick.getY();
         double right = Robot.rightStick.getY();
 
-        if(!inBounds(right, MIN, MAX))
+        if(!DriveSystem.inBounds(right, MIN, MAX))
             right = 0;
         
-        if (!inBounds(left, MIN, MAX))
+        if (!DriveSystem.inBounds(left, MIN, MAX))
             left = 0;
         
         Robot.driveTrain.tankDrive(right, left);
@@ -33,9 +33,5 @@ public class OperatorDriveAction extends Action {
     @Override
     protected void end() {
         Robot.driveTrain.stop();
-    }
-
-    private boolean inBounds(double val, double min, double max) {
-        return val <= min || val >= max;
     }
 }

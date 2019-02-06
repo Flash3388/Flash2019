@@ -15,11 +15,14 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     private final TalonSRX mRearLeft;
     private final TalonSRX mFrontLeft;
 
-    public DriveSystem(int frontRight, int frontLeft, int rearRight, int rearLeft) {
+    private final TalonSRX mBackPistonMotor;
+
+    public DriveSystem(int frontRight, int frontLeft, int rearRight, int rearLeft, int backPiston) {
         mFrontRight = new TalonSRX(frontRight);
         mRearRight = new TalonSRX(rearRight);
         mFrontLeft = new TalonSRX(frontLeft);
         mRearLeft = new TalonSRX(rearLeft);
+        mBackPistonMotor = new TalonSRX(backPiston);
 
         this.setDefaultAction(new OperatorDriveAction());
     }
@@ -34,13 +37,22 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     @Override
     public void stop() {
-        mRearRight.set(ControlMode.PercentOutput, 0);
-        mFrontRight.set(ControlMode.PercentOutput, 0);
-        mFrontLeft.set(ControlMode.PercentOutput, 0);
-        mRearLeft.set(ControlMode.PercentOutput, 0);
+        tankDrive(0, 0);
+    }
+
+    public void climbDrive(double speed) {
+        mBackPistonMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void stopClimb() {
+        climbDrive(0);
     }
 
     public double getDistance() {
         return mRearLeft.getSelectedSensorPosition() * WHEEL_RADIUS;
+    }
+
+    public static boolean inBounds(double val, double min, double max) {
+        return val <= min || val >= max;
     }
 }
