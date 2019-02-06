@@ -3,19 +3,23 @@ package frc.robot;
 import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.subsystems.ClimbingSystem;
 
 import frc.subsystems.DriveSystem;
 import frc.subsystems.LiftSystem;
+import frc.subsystems.ClimbingSystem;
 import frc.subsystems.RollerGripper;
+import frc.subsystems.HatchSystem;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
 	public static LiftSystem liftSystem;
 	public static ClimbingSystem climbingSystem;
 	public static RollerGripper rollerGripper;
+	public static HatchSystem hatchSystem;
+
 	public static Joystick rightStick;
 	public static Joystick leftStick;
 
@@ -31,6 +35,7 @@ public class Robot extends IterativeFRCRobot {
 		liftSystem = new LiftSystem(5, 6, 2,4,5);
 		climbingSystem = new ClimbingSystem(3, 4, 5, 6);
 		rollerGripper = new RollerGripper(7);
+		hatchSystem = new HatchSystem(0, 1);
 		rightStick = new Joystick(0);
 		leftStick = new Joystick(1);
 	}
