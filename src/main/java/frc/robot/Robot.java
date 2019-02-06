@@ -11,12 +11,15 @@ import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.subsystems.ClimbingSystem;
 
 
 public class Robot extends IterativeFRCRobot {
+	public static ClimbingSystem climbingSystem;
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
+		climbingSystem = new ClimbingSystem(3, 4, 5, 6);
 		initializer.initFlashboard = false;
 	}
 
