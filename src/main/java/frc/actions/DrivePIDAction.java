@@ -4,6 +4,7 @@ import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.util.FlashUtil;
 import frc.robot.Robot;
+import frc.subsystems.DriveSystem;
 
 public class DrivePIDAction extends Action {
     private final double mMargin;
@@ -20,6 +21,15 @@ public class DrivePIDAction extends Action {
     }
 
     @Override
+    protected void initialize() {
+        Robot.driveTrain.distanceSetPoint.set(mSetpoint + Robot.driveTrain.distanceSource.pidGet());
+        Robot.driveTrain.distancePID.setEnabled(true);
+        Robot.driveTrain.distancePID.setOutputLimit(-DriveSystem.DRIVE_LIMIT, DriveSystem.DRIVE_LIMIT);
+        Robot.driveTrain.distancePID.reset();
+
+    }
+
+    @Override
     protected void end() {
         Robot.driveTrain.stop();
     }
@@ -31,9 +41,15 @@ public class DrivePIDAction extends Action {
                 mThresholdStartTime = FlashUtil.millisInt();
                 mInThreshold = true;
             }
-            Robot.driveTrain.tankDrive(-Robot.driveTrain.distancePID.calculate(),
-                    -Robot.driveTrain.distancePID.calculate());
+            Robot.driveTrain.drive(-Robot.driveTrain.distancePID.calculate());
         }
+
+        else {
+            if (mThresholdStartTime >= 1)
+                mThresholdStartTime = 0;
+            Robot.driveTrain.drive(-Robot.driveTrain.distancePID.calculate());
+        }
+
     }
 
     @Override

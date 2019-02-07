@@ -23,13 +23,13 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public static final String DISTANCE_NAME = "distanceSetPoint";
     public static final String ROTATION_NAME = "rotationSetPoint";
 
-    public static PIDController distancePID;
-    public static PIDController rotatePID;
-    public static PIDSource distanceSource;
-    public static PIDSource rotationSource;
+    public PIDController distancePID;
+    public PIDController rotatePID;
+    public PIDSource distanceSource;
+    public PIDSource rotationSource;
 
-    public static DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
-    public static DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
+    public DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
+    public DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
 
     private final ADXRS450_Gyro mGyro;
 
@@ -54,6 +54,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         this.setDefaultAction(new OperatorDriveAction());
+
+        pidsHandler();
     }
 
     @Override
@@ -68,6 +70,39 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public void stop() {
         tankDrive(0, 0);
     }
+
+    private void pidsHandler() {
+        distanceSource = new PIDSource() {
+            @Override
+            public double pidGet() {
+                return getDistance();
+            }
+        };
+
+        rotationSource = new PIDSource() {
+            @Override
+            public double pidGet() {
+                return getAngle();
+            }
+        };
+
+        distancePID = new PIDController(0.21, 0.0, 0.285, 0.0, distanceSetPoint, distanceSource);
+        distancePID.setOutputLimit(-DRIVE_LIMIT, DRIVE_LIMIT);
+        rotatePID = new PIDController(0.308, 0.0, 0.628, 0.0, rotationSetPoint, rotationSource);
+        rotatePID.setOutputLimit(-ROTATE_LIMIT, ROTATE_LIMIT);
+    }
+
+    public void drive(double speed)
+	{	
+		final double KP = 0.1;
+		final double MARGIN = 1.0;
+		//driveTrain.tankDrive(speed, speed);
+		double angle = rotationSource.pidGet();
+	///	if(DrivePIDAction.inThreshold)
+		//	angle = 0;
+		tankDrive(speed, -angle*KP);
+	}
+
 
     public void climbDrive(double speed) {
         mBackPistonMotor.set(ControlMode.PercentOutput, speed);
@@ -89,12 +124,12 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         return val <= min || val >= max;
     }
 
-    public static void setupDrivePIDTunner() {
+    public void setupDrivePIDTunner() {
         Flashboard.putPIDTuner("distance", distancePID.kpProperty(), distancePID.kiProperty(), distancePID.kdProperty(),
                 distancePID.kfProperty(), distanceSetPoint, distanceSource, 20, 1000);
     }
 
-    public static void setupRotationPIDTunner() {
+    public void setupRotationPIDTunner() {
         Flashboard.putPIDTuner("rotation", rotatePID.kpProperty(), rotatePID.kiProperty(), rotatePID.kdProperty(),
                 rotatePID.kfProperty(), rotationSetPoint, rotationSource, 20, 1000);
     }

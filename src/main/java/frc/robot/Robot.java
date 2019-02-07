@@ -3,10 +3,9 @@ package frc.robot;
 import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
-
+import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.LiftSystem;
 import frc.subsystems.ClimbingSystem;
@@ -36,8 +35,8 @@ public class Robot extends IterativeFRCRobot {
 		climbingSystem = new ClimbingSystem(3, 4, 5, 6);
 		rollerGripper = new RollerGripper(7);
 		hatchSystem = new HatchSystem(0, 1);
-		rightStick = new Joystick(0);
-		leftStick = new Joystick(1);
+		rightStick = new Joystick(2, 5);
+		leftStick = new Joystick(1, 5);
 	}
 
 	@Override
@@ -57,7 +56,6 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void teleopPeriodic() {
-
 	}
 
 	@Override
