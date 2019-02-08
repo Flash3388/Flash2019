@@ -31,10 +31,10 @@ public class Robot extends IterativeFRCRobot {
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 		driveTrain = new DriveSystem(0, 1, 2, 3,4);
-		liftSystem = new LiftSystem(5, 6, 2,4,5);
-		climbingSystem = new ClimbingSystem(3, 4, 5, 6);
-		rollerGripper = new RollerGripper(7);
-		hatchSystem = new HatchSystem(0, 1);
+		// liftSystem = new LiftSystem(5, 6, 2,4,5);
+		// climbingSystem = new ClimbingSystem(3, 4, 5, 6);
+		// rollerGripper = new RollerGripper(7);
+		// hatchSystem = new HatchSystem(0, 1);
 		rightStick = new Joystick(2, 5);
 		leftStick = new Joystick(1, 5);
 	}
