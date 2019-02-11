@@ -23,6 +23,11 @@ import frc.actions.SmartDriveToTarget;
 import frc.actions.VisionRotatePIDAction;
 import frc.subsystems.DriveSystem;
 
+import frc.actions.TargetSelectAction;
+import frc.tables.TargetSelect;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
 
@@ -33,6 +38,10 @@ public class Robot extends IterativeFRCRobot {
 	public static NetworkTableEntry mCurveEntry;
 	public static SuffleboardHandler pidHandler;
 
+	private List<TargetSelectAction> mTargetSelectActionList;// <TargetSelectAction> mTargetSelectActions;
+	private TargetSelect mTargetSelect;
+	private static XboxController mXboxController;
+
 	// @Override
 	// protected void preInit(RobotInitializer initializer) {
 	// 	initializer.initFlashboard = false;
@@ -40,6 +49,18 @@ public class Robot extends IterativeFRCRobot {
 
 	
 	DoubleProperty marginProperty = new SimpleDoubleProperty(1.0);
+
+
+	protected void initActions() {
+
+		for (int i = 0 ; i < TargetSelect.NUM_OF_POSSIBLE_TARGETS ; i++) {
+			mTargetSelectActionList.add(new TargetSelectAction(mTargetSelect, i));
+		}
+		mXboxController.A.whenPressed(mTargetSelectActionList.get(0));
+		mXboxController.B.whenPressed(mTargetSelectActionList.get(1));
+		mXboxController.X.whenPressed(mTargetSelectActionList.get(2));
+		mXboxController.Y.whenPressed(mTargetSelectActionList.get(3));
+	}
 
 	@Override
 	protected void initRobot() {
