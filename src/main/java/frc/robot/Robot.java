@@ -1,44 +1,70 @@
 package frc.robot;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
+import edu.flash3388.flashlib.flashboard.Flashboard;
+import edu.flash3388.flashlib.robot.Action;
+import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
-import edu.flash3388.flashlib.robot.hid.Joystick;
+import edu.flash3388.flashlib.robot.hid.XboxController;
+import edu.flash3388.flashlib.util.beans.DoubleProperty;
+import edu.flash3388.flashlib.util.beans.SimpleDoubleProperty;
+import edu.flash3388.flashlib.util.beans.SimpleProperty;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.TableListener;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick.ButtonType;
+import frc.actions.DrivePIDAction;
+import frc.actions.OperatorDriveAction;
+import frc.actions.SimpleDriveToTarget;
+import frc.actions.SmartDriveToTarget;
+import frc.actions.VisionRotatePIDAction;
 import frc.subsystems.DriveSystem;
-import frc.subsystems.LiftSystem;
-import frc.subsystems.ClimbingSystem;
-import frc.subsystems.RollerGripper;
-import frc.subsystems.HatchSystem;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
-	public static LiftSystem liftSystem;
-	public static ClimbingSystem climbingSystem;
-	public static RollerGripper rollerGripper;
-	public static HatchSystem hatchSystem;
 
-	public static Joystick rightStick;
-	public static Joystick leftStick;
+	public static XboxController xbox;
 
-	@Override
-	protected void preInit(RobotInitializer initializer) {
-		initializer.initFlashboard = false;
-	}
+	private NetworkTable mTable;
+	private NetworkTableEntry mAngleEntry;
+	public static NetworkTableEntry mCurveEntry;
+	public static SuffleboardHandler pidHandler;
+
+	// @Override
+	// protected void preInit(RobotInitializer initializer) {
+	// 	initializer.initFlashboard = false;
+	// }
+
+	
+	DoubleProperty marginProperty = new SimpleDoubleProperty(1.0);
 
 	@Override
 	protected void initRobot() {
+		Flashboard.start();
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
-		driveTrain = new DriveSystem(0, 1, 2, 3,4);
-		// liftSystem = new LiftSystem(5, 6, 2,4,5);
-		// climbingSystem = new ClimbingSystem(3, 4, 5, 6);
-		// rollerGripper = new RollerGripper(7);
-		// hatchSystem = new HatchSystem(0, 1);
-		rightStick = new Joystick(2, 5);
-		leftStick = new Joystick(1, 5);
-	}
+		mTable = NetworkTableInstance.getDefault().getTable("analysis");
+		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
+		driveTrain = new DriveSystem(10, 1, 3, 0, mTable);
+		driveTrain.setDefaultAction(new OperatorDriveAction());
 
+		xbox = new XboxController(1);
+		xbox.A.whenPressed(new SmartDriveToTarget(0.5, 500));
+		xbox.B.whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				driveTrain.resetDistance();
+			}
+		});
+		mAngleEntry = mTable.getEntry("Angle");
+		mCurveEntry = mTable.getEntry("Curve");
+		mCurveEntry.setDouble(1);
+		mAngleEntry.setDouble(0.0);
+	}
+	
 	@Override
 	protected void disabledInit() {
 
@@ -51,11 +77,14 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void teleopInit() {
-
+		driveTrain.resetDistance();
 	}
 
 	@Override
 	protected void teleopPeriodic() {
+	//	System.out.println("VISION : "+driveTrain.getVisionAngle()+" Actual "+ driveTrain.getAngle());
+		//	System.out.println(driveTrain.getDistance());
+		System.out.println(driveTrain.getVisionAngleDeg());
 	}
 
 	@Override

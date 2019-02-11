@@ -2,7 +2,6 @@ package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
-import frc.subsystems.DriveSystem;
 
 public class OperatorDriveAction extends Action {
     private final double MIN = -0.12;
@@ -18,16 +17,16 @@ public class OperatorDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double left = Robot.leftStick.getY();
-        double right = Robot.rightStick.getY();
+        double left = Robot.xbox.getLeftStick().getY();
+        double right = Robot.xbox.getRightStick().getY();
 
-        if(!DriveSystem.inBounds(right, MIN, MAX))
+        if(right>= MIN && right <= MAX)
             right = 0;
         
-        if (!DriveSystem.inBounds(left, MIN, MAX))
+        if (left >= MIN && left <= MAX)
             left = 0;
         
-        Robot.driveTrain.tankDrive(right, left);
+        Robot.driveTrain.tankDrive(right, left); //fuck off Tom
     }
 
     @Override
