@@ -4,8 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.flash3388.flashlib.flashboard.Flashboard;
-import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.PIDController;
 import edu.flash3388.flashlib.robot.PIDSource;
 import edu.flash3388.flashlib.robot.Subsystem;
@@ -25,10 +23,12 @@ import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.NetworkPIDTunner;
 
 public class DriveSystem extends Subsystem implements TankDriveSystem {
-    public static final int OFFSET_MARGIN = 5;
-
     public static final double DRIVE_LIMIT = 1.0;
     public static final double ROTATE_LIMIT = 1.0;
+
+    private final double CAMERA_FOV = 65.0;
+    private final double CAMERA_WIDTH = 320.0;
+    private final double DEGREES_IN_A_CIRCLE = 360.0;
 
     private final double WHEEL_DIAMETER = 15.24;
     private final double PPR = 4096.0;
@@ -139,16 +139,15 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
 
     public double getVisionDistance() {
-        double angle = mDistanceEntry.getDouble(-1);
-        return angle;
+        return mDistanceEntry.getDouble(-1);
     }
     
     public double getAngle() {
-        return mGyro.getAngle() % 360;
+        return mGyro.getAngle() % DEGREES_IN_A_CIRCLE;
     }
     
     public double getVisionAngleDeg() {
-        return (-mOffsetEntry.getDouble(0) * (24.75/Math.sqrt(Math.pow(320, 2)+Math.pow(480,2))));
+        return -mOffsetEntry.getDouble(0) * (CAMERA_FOV/CAMERA_WIDTH);
     }
     
     public double getVisionAnglePixel() {
@@ -163,17 +162,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mGyro.reset();
     }
 
-    public static boolean inBounds(double val, double min, double max) {
-        return val > min && val < max;
-    }
-
-    public void setupDrivePIDTunner() {
-        Flashboard.putPIDTuner("distance", distancePID.kpProperty(), distancePID.kiProperty(), distancePID.kdProperty(),
-                distancePID.kfProperty(), distanceSetPoint, distanceSource, 20, 1000);
-    }
-
-    public void setupRotationPIDTunner() {
-        Flashboard.putPIDTuner("rotation", rotatePID.kpProperty(), rotatePID.kiProperty(), rotatePID.kdProperty(),
-                rotatePID.kfProperty(), rotationSetPoint, rotationSource, 20, 1000);
-    }
+    // public double getTargetAngle(double approxAngle) {
+        
+    // }
 }
