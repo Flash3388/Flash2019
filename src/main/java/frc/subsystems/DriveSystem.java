@@ -40,7 +40,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     private final TalonSRX mBackPistonMotor;
 
-    public DriveSystem(int frontRight, int frontLeft, int rearRight, int rearLeft, int backPiston) {
+    public DriveSystem(int frontRight, int rearRight, int frontLeft, int rearLeft, int backPiston) {
         mFrontRight = new TalonSRX(frontRight);
         mRearRight = new TalonSRX(rearRight);
         mFrontLeft = new TalonSRX(frontLeft);
@@ -52,8 +52,6 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
         mFrontRight.configFactoryDefault();
         mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-
-        this.setDefaultAction(new OperatorDriveAction());
 
         pidsHandler();
     }

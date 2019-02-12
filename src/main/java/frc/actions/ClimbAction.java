@@ -3,9 +3,9 @@ package frc.actions;
 import edu.flash3388.flashlib.robot.InstantAction;
 import frc.robot.Robot;
 
-public class Climb extends InstantAction {
+public class ClimbAction extends InstantAction {
 
-    public Climb() {
+    public ClimbAction() {
         requires(Robot.climbingSystem);
     }
 

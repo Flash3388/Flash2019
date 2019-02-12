@@ -5,8 +5,8 @@ import frc.robot.Robot;
 import frc.subsystems.DriveSystem;
 
 public class OperatorDriveAction extends Action {
-    private final double MIN = -0.12;
-    private final double MAX = 0.12;
+    private final double MIN = -0.15;
+    private final double MAX = 0.15;
 
     public OperatorDriveAction(){
         requires(Robot.driveTrain);
@@ -18,8 +18,8 @@ public class OperatorDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double left = Robot.leftStick.getY();
-        double right = Robot.rightStick.getY();
+        double left = Robot.xbox.LeftStick.getY();
+        double right = Robot.xbox.RightStick.getY();
 
         if(!DriveSystem.inBounds(right, MIN, MAX))
             right = 0;

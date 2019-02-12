@@ -24,11 +24,11 @@ public class ClimbDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double val = Robot.rightStick.getY();
+        // double val = Robot.rightStick.getY();
 
-        if(DriveSystem.inBounds(val, MIN, MAX))
-            val = 0;
+        // if(DriveSystem.inBounds(val, MIN, MAX))
+        //     val = 0;
         
-        Robot.driveTrain.climbDrive(val);
+        // Robot.driveTrain.climbDrive(val);
     }
 }
