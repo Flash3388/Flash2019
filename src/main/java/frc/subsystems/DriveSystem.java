@@ -46,6 +46,9 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mFrontLeft = new TalonSRX(frontLeft);
         mRearLeft = new TalonSRX(rearLeft);
         mBackPistonMotor = new TalonSRX(backPiston);
+
+        mFrontLeft.setInverted(true);
+        mRearLeft.setInverted(true);
         
         mGyro = new ADXRS450_Gyro();
         mGyro.calibrate();
