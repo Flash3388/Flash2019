@@ -4,6 +4,7 @@ import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.util.FlashUtil;
 import frc.robot.Robot;
+import frc.subsystems.DriveSystem;
 
 public class SmartDriveToTarget extends Action {
     private double mThresholdStartTime = 0.0;
@@ -21,7 +22,8 @@ public class SmartDriveToTarget extends Action {
     @Override
     protected void initialize() {
         Robot.driveTrain.distanceSetPoint.set(Robot.driveTrain.getVisionDistance());
-        Robot.driveTrain.rotationSetPoint.set(-90);
+        Robot.driveTrain.rotationSetPoint.set(
+                (double)DriveSystem.findClosest(new int[]{-90,-45,0,45,90},(int)Robot.driveTrain.getAngle()));
 
         if (Robot.driveTrain.distanceSetPoint.get() == -1 || Robot.driveTrain.distanceSetPoint.get() > 300.0
                 || Robot.driveTrain.rotationSetPoint.get() == 0.0) {

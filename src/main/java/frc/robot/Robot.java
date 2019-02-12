@@ -27,10 +27,10 @@ public class Robot extends IterativeFRCRobot {
 	public static NetworkTableEntry mCurveEntry;
 	public static SuffleboardHandler pidHandler;
 
-	// @Override
-	// protected void preInit(RobotInitializer initializer) {
-	// 	initializer.initFlashboard = false;
-	// }
+	@Override
+	protected void preInit(RobotInitializer initializer) {
+	 	initializer.initFlashboard = false;
+	}
 
 	
 	DoubleProperty marginProperty = new SimpleDoubleProperty(1.0);
