@@ -37,7 +37,6 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void initRobot() {
-		Flashboard.start();
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 		mTable = NetworkTableInstance.getDefault().getTable("analysis");
 		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
