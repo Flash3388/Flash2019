@@ -39,41 +39,35 @@ public class Robot extends IterativeFRCRobot {
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 		mCompressor = new Compressor();
-		mCompressor.start();
+		mCompressor.stop();
 
 		driveTrain = new DriveSystem(2,6, 3,4, 5);
 		driveTrain.setDefaultAction(new OperatorDriveAction());
 		// liftSystem = new LiftSystem(5, 6, 2,4,5);
 		climbingSystem = new ClimbingSystem(2,7 ,6,0 , 5, 1);
 		xbox = new XboxController(1);
-		xbox.A.whenPressed(new InstantAction() {
-
+		xbox.A.whileHeld(new Action(){
+		
 			@Override
 			protected void execute() {
-				climbingSystem.mBackPiston.toggle();
+				driveTrain.tankDrive(0.4, -0.4);
+			}
+		
+			@Override
+			protected void end() {
+				driveTrain.stop();
 			}
 		});
-		xbox.B.whenPressed(new InstantAction() {
-
+		xbox.B.whileHeld(new Action(){
+		
 			@Override
 			protected void execute() {
-				climbingSystem.mFrontLeftPiston.toggle();
+				driveTrain.tankDrive(0.4, -0.4);
 			}
-		});
-		xbox.X.whenPressed(new InstantAction() {
-
+		
 			@Override
-			protected void execute() {
-				climbingSystem.mFrontRighPiston.toggle();
-			}
-		});
-		xbox.Y.whenPressed(new InstantAction() {
-
-			@Override
-			protected void execute() {
-				climbingSystem.mBackPiston.toggle();
-				climbingSystem.mFrontLeftPiston.toggle();
-				climbingSystem.mFrontRighPiston.toggle();
+			protected void end() {
+				driveTrain.stop();
 			}
 		});
 
