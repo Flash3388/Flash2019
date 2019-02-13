@@ -23,10 +23,10 @@ public class SmartDriveToTarget extends Action {
     protected void initialize() {
         Robot.driveTrain.distanceSetPoint.set(Robot.driveTrain.getVisionDistance());
         Robot.driveTrain.rotationSetPoint.set(
-                (double)DriveSystem.findClosest(new int[]{-90,-45,0,45,90},(int)Robot.driveTrain.getAngle()));
+                (double)DriveSystem.findClosest(new int[]{-90,-45,0,45,90},(int)Robot.driveTrain.getAngle()-(int)Robot.driveTrain.getVisionAngleDeg()));
 
-        if (Robot.driveTrain.distanceSetPoint.get() == -1 || Robot.driveTrain.distanceSetPoint.get() > 300.0
-                || Robot.driveTrain.rotationSetPoint.get() == 0.0) {
+        System.out.println(Robot.driveTrain.rotationSetPoint.get());
+        if (Robot.driveTrain.distanceSetPoint.get() == -1 || Robot.driveTrain.distanceSetPoint.get() > 300.0) {
             System.out.println("Fucked");
             cancel();
         }
@@ -58,8 +58,8 @@ public class SmartDriveToTarget extends Action {
         else
             ratio = distance / Robot.driveTrain.distancePID.getSetPoint().get();
         
-        if (ratio < 0.575)
-            ratio -= 0.575;
+        if (ratio < 0.56)
+            ratio -= 0.56;
 
         if (!Robot.driveTrain.rotatePID.isEnabled() || (inRotationThreshold())) {
             if (mThresholdStartTime < 1)
@@ -74,7 +74,7 @@ public class SmartDriveToTarget extends Action {
 
     @Override
     protected boolean isFinished() {
-        return inRotationThreshold() && inDistanceThreshold() && mThresholdStartTime > 0
+        return inRotationThreshold() && mThresholdStartTime > 0
                 && FlashUtil.millisInt() - mThresholdStartTime >= mRotateTimeInThreshold;
     }
 
@@ -82,12 +82,5 @@ public class SmartDriveToTarget extends Action {
         double margin = mRotateMargin;
         double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
         return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -margin, margin);
-    }
-
-    private boolean inDistanceThreshold() {
-        double margin = 20;
-        double current = Robot.driveTrain.distancePID.getPIDSource().pidGet();
-
-        return Mathf.constrained(Robot.driveTrain.distanceSetPoint.get() - current, -margin, margin);
     }
 }

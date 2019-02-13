@@ -1,11 +1,11 @@
 package frc.robot;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
-import edu.flash3388.flashlib.flashboard.Flashboard;
 
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
+import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import edu.flash3388.flashlib.util.beans.SimpleDoubleProperty;
@@ -15,12 +15,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.actions.ComplexActions;
 import frc.actions.OperatorDriveAction;
+import frc.actions.SmartDriveToTarget;
 import frc.subsystems.DriveSystem;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
 
 	public static XboxController xbox;
+
+	public static Joystick righJoystick;
+	public static Joystick lefJoystick;
 
 	private NetworkTable mTable;
 	private NetworkTableEntry mAngleEntry;
@@ -43,16 +47,18 @@ public class Robot extends IterativeFRCRobot {
 		driveTrain = new DriveSystem(10, 1, 3, 0, mTable);
 		driveTrain.setDefaultAction(new OperatorDriveAction());
 
-		xbox = new XboxController(1);
-		xbox.A.whenPressed(ComplexActions.driveToTarget());
-		xbox.B.whenPressed(new InstantAction(){
+		// xbox = new XboxController(0);
+		righJoystick = new Joystick(1, 2);
+		lefJoystick = new Joystick(2, 2);
+		// xbox.A.whenPressed(new SmartDriveToTarget(1,500));
+		// xbox.B.whenPressed(new InstantAction(){
 		
-			@Override
-			protected void execute() {
-				driveTrain.resetGyro();
-				driveTrain.resetDistance();
-			}
-		});
+		// 	@Override
+		// 	protected void execute() {
+		// 		driveTrain.resetGyro();
+		// 		driveTrain.resetDistance();
+		// 	}
+		// });
 		mAngleEntry = mTable.getEntry("Angle");
 		mCurveEntry = mTable.getEntry("Curve");
 		mCurveEntry.setDouble(1);
