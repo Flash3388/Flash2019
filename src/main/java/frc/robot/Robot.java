@@ -22,6 +22,7 @@ import frc.actions.TargetSelectAction;
 import frc.subsystems.DriveSystem;
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
+import frc.tables.TargetDataTable;
 import frc.tables.TargetSelectTable;
 
 public class Robot extends IterativeFRCRobot implements TargetDataListener {
@@ -39,7 +40,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	private XboxController mXboxController;
 	private List<TargetSelectAction> mTargetSelectActionList;
-    private TargetSelectTable mTargetSelectTable;
+	private TargetSelectTable mTargetSelectTable;
+	private TargetDataTable mTargetDataTable;
 
 
 	@Override
@@ -72,6 +74,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		mXboxController.X.whenPressed(mTargetSelectActionList.get(2));
 		mXboxController.Y.whenPressed(mTargetSelectActionList.get(3));
 
+		mTargetDataTable.registerTargetDataListener(this);
 
 		// xbox.A.whenPressed(new SmartDriveToTarget(1,500));
 		// xbox.B.whenPressed(new InstantAction(){
