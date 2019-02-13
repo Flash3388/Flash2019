@@ -128,7 +128,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
         distancePID = new PIDController(0.21, 0.0, 0.285, 0.0, distanceSetPoint, distanceSource);
         distancePID.setOutputLimit(-DRIVE_LIMIT, DRIVE_LIMIT);
-        rotatePID = new PIDController(0.1,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
+        rotatePID = new PIDController(0.04,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
         rotatePID.setOutputLimit(-ROTATE_LIMIT, ROTATE_LIMIT);
 
         //rotatePID.setPID(0.09, 0.1865, 0.0109);
@@ -147,7 +147,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
     
     public double getVisionAngleDeg() {
-        return -mOffsetEntry.getDouble(0) * (CAMERA_FOV/CAMERA_WIDTH);
+        double angle = -mOffsetEntry.getDouble(0)* (CAMERA_FOV/CAMERA_WIDTH);
+        return angle < 0 ? angle  +10 : angle;
     }
     
     public double getVisionAnglePixel() {

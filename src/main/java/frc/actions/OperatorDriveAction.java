@@ -17,8 +17,8 @@ public class OperatorDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double left = Robot.xbox.getLeftStick().getY();
-        double right = Robot.xbox.getRightStick().getY();
+        double left = Robot.xbox.LeftStick.getY();
+        double right = Robot.xbox.RightStick.getY();
 
         if(right>= MIN && right <= MAX)
             right = 0;

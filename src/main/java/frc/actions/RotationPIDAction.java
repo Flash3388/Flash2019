@@ -11,22 +11,21 @@ public class RotationPIDAction extends Action {
     private final int mTimeInThreshold;
 
     private double mThresholdStartTime = 0;
-    private double modifier = 0.6;
+    private double modifier = 0.4;
 
-    public RotationPIDAction(double margin, int timeInThreshold, double setpoint) {
+    public RotationPIDAction(double margin, int timeInThreshold) {
         requires(Robot.driveTrain);
 
         mMargin = margin;
         mTimeInThreshold = timeInThreshold;
-        Robot.driveTrain.distancePID.setSetPoint(() -> setpoint);
+        
     }
 
     @Override
     protected void initialize() {
-        Robot.driveTrain.resetGyro();
+        Robot.driveTrain.rotationSetPoint.set(Robot.driveTrain.getAngle() - Robot.driveTrain.getVisionAngleDeg());;
 
         Robot.driveTrain.rotatePID.setEnabled(true);
-        Robot.driveTrain.rotatePID.setOutputLimit(-DriveSystem.ROTATE_LIMIT, DriveSystem.ROTATE_LIMIT);
         Robot.driveTrain.rotatePID.reset();
     }
 
@@ -37,9 +36,9 @@ public class RotationPIDAction extends Action {
 
     @Override
     protected void execute() {
-        double pidResult = -Robot.driveTrain.rotatePID.calculate();
+        double pidResult = Robot.driveTrain.rotatePID.calculate();
 
-        if (!Robot.driveTrain.rotatePID.isEnabled() || inDistanceThreshold()) {
+        if (!Robot.driveTrain.rotatePID.isEnabled() || inRotationThreshold()) {
             if (mThresholdStartTime < 1)
                 mThresholdStartTime = FlashUtil.millisInt();
         } else {
@@ -52,12 +51,13 @@ public class RotationPIDAction extends Action {
 
     @Override
     protected boolean isFinished() {
-        return inDistanceThreshold() && mThresholdStartTime > 0
+        return inRotationThreshold() && mThresholdStartTime > 0
          && FlashUtil.millisInt() - mThresholdStartTime >= mTimeInThreshold;
     }
 
-    private boolean inDistanceThreshold() {
-        double current = Robot.driveTrain.distancePID.getPIDSource().pidGet();
+    private boolean inRotationThreshold() {
+        double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
+        System.out.println(Robot.driveTrain.rotatePID.getSetPoint().get() +" "+ current+" "+ mMargin);
         return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -mMargin, mMargin);
     }
 }

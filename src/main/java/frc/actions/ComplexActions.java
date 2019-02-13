@@ -6,7 +6,7 @@ import frc.robot.Robot;
 public class ComplexActions {
     public static ActionGroup driveToTarget() {
         return new ActionGroup()
-            .addSequential(new RotationPIDAction(0.5, 500, Robot.driveTrain.getVisionAngleDeg()))
+            .addSequential(new RotationPIDAction(9, 0))
             .addSequential(new SmartDriveToTarget(0.5, 500));
     } 
 }
