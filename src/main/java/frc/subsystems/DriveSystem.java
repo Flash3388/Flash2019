@@ -8,6 +8,7 @@ import edu.flash3388.flashlib.flashboard.Flashboard;
 import edu.flash3388.flashlib.robot.PIDController;
 import edu.flash3388.flashlib.robot.PIDSource;
 import edu.flash3388.flashlib.robot.Subsystem;
+import edu.flash3388.flashlib.robot.systems.FlashDrive;
 import edu.flash3388.flashlib.robot.systems.TankDriveSystem;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import edu.flash3388.flashlib.util.beans.PropertyHandler;
@@ -69,7 +70,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     @Override
     public void arcadeDrive(double moveValue, double rotateValue) {
-        TankDriveSystem.super.arcadeDrive(moveValue, rotateValue);
+        double[] values = FlashDrive.calculate_arcadeDrive(moveValue, rotateValue);
+        tankDrive(values[0], values[1]);
     }
 
     @Override
