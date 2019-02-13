@@ -8,33 +8,31 @@ import frc.subsystems.DriveSystem;
 
 public class SmartDriveToTarget extends Action {
     private double mThresholdStartTime = 0.0;
-
     private double mRotateMargin;
 
     private int mRotateTimeInThreshold;
 
-    @Deprecated
     public SmartDriveToTarget(double rotateMargin, int rotateTimeInThreshold) {
         requires(Robot.driveTrain);
 
         mRotateMargin = rotateMargin;
         mRotateTimeInThreshold = rotateTimeInThreshold;
+    }
 
+    @Override
+    protected void initialize() {
         Robot.driveTrain.distanceSetPoint.set(Robot.driveTrain.getVisionDistance());
-        Robot.driveTrain.rotationSetPoint.set(-Robot.driveTrain.getVisionAngleDeg());
-        
+        Robot.driveTrain.rotationSetPoint.set(
+                (double)DriveSystem.findClosest(new int[]{-90,-45,0,45,90},(int)Robot.driveTrain.getAngle()));
 
         if (Robot.driveTrain.distanceSetPoint.get() == -1 || Robot.driveTrain.distanceSetPoint.get() > 300.0
                 || Robot.driveTrain.rotationSetPoint.get() == 0.0) {
             System.out.println("Fucked");
             cancel();
         }
-    }
 
-    @Override
-    protected void initialize() {
         Robot.driveTrain.resetDistance();
-        Robot.driveTrain.resetGyro();
+        // Robot.driveTrain.resetGyro();
 
         Robot.driveTrain.distancePID.setEnabled(true);
         Robot.driveTrain.distancePID.reset();
@@ -59,6 +57,9 @@ public class SmartDriveToTarget extends Action {
             ratio = 1;
         else
             ratio = distance / Robot.driveTrain.distancePID.getSetPoint().get();
+        
+        if (ratio < 0.575)
+            ratio -= 0.575;
 
         if (!Robot.driveTrain.rotatePID.isEnabled() || (inRotationThreshold())) {
             if (mThresholdStartTime < 1)
@@ -67,8 +68,8 @@ public class SmartDriveToTarget extends Action {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-        System.out.println(ratio);
-        Robot.driveTrain.arcadeDrive(distanceResult * (1.0 - ratio) +0.2, rotationResult * ratio);
+
+        Robot.driveTrain.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * 0.6);
     }
 
     @Override
@@ -80,7 +81,6 @@ public class SmartDriveToTarget extends Action {
     private boolean inRotationThreshold() {
         double margin = mRotateMargin;
         double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
-        System.out.println("Target: "+Robot.driveTrain.rotationSetPoint.get()+" current: "+current);
         return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -margin, margin);
     }
 
