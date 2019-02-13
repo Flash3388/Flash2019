@@ -1,20 +1,20 @@
 package frc.actions;
 
-import frc.tables.TargetSelect;
+import frc.tables.TargetSelectTable;
 import edu.flash3388.flashlib.robot.InstantAction;
 
 public class TargetSelectAction extends InstantAction {
-	private final TargetSelect mTargetSelect;
+	private final TargetSelectTable mTargetSelectTable;
 	private int mTargetNumber;
 
-	public TargetSelectAction(TargetSelect targetSelect, int targetNumber) {
-		mTargetSelect = targetSelect;
+	public TargetSelectAction(TargetSelectTable targetSelectTable, int targetNumber) {
+		mTargetSelectTable = targetSelectTable;
 		mTargetNumber = targetNumber;
 	}
 
 	@Override
 	protected void execute() {
-		mTargetSelect.selectTarget(mTargetNumber);
+		mTargetSelectTable.selectTarget(mTargetNumber);
 	}
 
 	@Override

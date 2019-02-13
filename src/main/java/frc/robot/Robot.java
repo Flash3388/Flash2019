@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.List;
+
 import edu.flash3388.flashlib.FRCHIDInterface;
 
 import edu.flash3388.flashlib.robot.InstantAction;
@@ -16,9 +18,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.actions.ComplexActions;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
+import frc.actions.TargetSelectAction;
 import frc.subsystems.DriveSystem;
+import frc.tables.TargetData;
+import frc.tables.TargetDataListener;
+import frc.tables.TargetSelectTable;
 
-public class Robot extends IterativeFRCRobot {
+public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	public static DriveSystem driveTrain;
 
 	public static XboxController xbox;
@@ -30,6 +36,11 @@ public class Robot extends IterativeFRCRobot {
 	private NetworkTableEntry mAngleEntry;
 	public static NetworkTableEntry mCurveEntry;
 	public static SuffleboardHandler pidHandler;
+
+	private XboxController mXboxController;
+	private List<TargetSelectAction> mTargetSelectActionList;
+    private TargetSelectTable mTargetSelectTable;
+
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
@@ -50,6 +61,17 @@ public class Robot extends IterativeFRCRobot {
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 8);
 		lefJoystick = new Joystick(2, 8);
+
+		mXboxController  = new XboxController(1);
+		mTargetSelectTable = new TargetSelectTable();
+		for (int i = 0 ; i < TargetSelectTable.NUM_OF_POSSIBLE_TARGETS ; i++) {
+			mTargetSelectActionList.add(new TargetSelectAction(mTargetSelectTable, i));
+		}
+		mXboxController.A.whenPressed(mTargetSelectActionList.get(0));
+		mXboxController.B.whenPressed(mTargetSelectActionList.get(1));
+		mXboxController.X.whenPressed(mTargetSelectActionList.get(2));
+		mXboxController.Y.whenPressed(mTargetSelectActionList.get(3));
+
 
 		// xbox.A.whenPressed(new SmartDriveToTarget(1,500));
 		// xbox.B.whenPressed(new InstantAction(){
@@ -96,4 +118,10 @@ public class Robot extends IterativeFRCRobot {
 	protected void autonomousPeriodic() {
 
 	}
+
+	public void onTargetData(TargetData targetData) {
+		
+	}
+
+
 }
