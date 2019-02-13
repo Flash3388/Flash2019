@@ -68,6 +68,11 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
 
     @Override
+    public void arcadeDrive(double moveValue, double rotateValue) {
+        TankDriveSystem.super.arcadeDrive(moveValue, rotateValue);
+    }
+
+    @Override
     public void stop() {
         tankDrive(0, 0);
     }

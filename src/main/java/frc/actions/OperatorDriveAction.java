@@ -18,8 +18,8 @@ public class OperatorDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double left = Robot.xbox.LeftStick.getY();
-        double right = Robot.xbox.RightStick.getY();
+        double left = Robot.controller.getY();
+        double right = Robot.controller.getX();
 
         if(!DriveSystem.inBounds(right, MIN, MAX))
             right = 0;
@@ -27,7 +27,7 @@ public class OperatorDriveAction extends Action {
         if (!DriveSystem.inBounds(left, MIN, MAX))
             left = 0;
         
-        Robot.driveTrain.tankDrive(right, left);
+        Robot.driveTrain.arcadeDrive(left, right);
     }
 
     @Override
