@@ -1,6 +1,6 @@
 package frc.tables;
 
-interface TargetSelectListener {
+public interface TargetSelectListener {
     void onTargetSelectPressed(int targetNumber);
     void OnNextTargetSelectPressed();
 }
