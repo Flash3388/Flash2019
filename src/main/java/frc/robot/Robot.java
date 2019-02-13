@@ -47,9 +47,10 @@ public class Robot extends IterativeFRCRobot {
 		driveTrain = new DriveSystem(10, 1, 3, 0, mTable);
 		driveTrain.setDefaultAction(new OperatorDriveAction());
 
-		// xbox = new XboxController(0);
-		righJoystick = new Joystick(1, 2);
-		lefJoystick = new Joystick(2, 2);
+		xbox = new XboxController(0);
+		righJoystick = new Joystick(1, 8);
+		lefJoystick = new Joystick(2, 8);
+
 		// xbox.A.whenPressed(new SmartDriveToTarget(1,500));
 		// xbox.B.whenPressed(new InstantAction(){
 		
