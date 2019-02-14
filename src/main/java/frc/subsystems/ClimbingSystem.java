@@ -1,37 +1,27 @@
 package frc.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.flash3388.flashlib.robot.Subsystem;
 
 public class ClimbingSystem extends Subsystem {
-    public final Piston mFrontRighPiston;
-    public final Piston mFrontLeftPiston;
-    public final Piston mBackPiston;
+    private final Piston mFrontRighPiston;
+    private final Piston mFrontLeftPiston;
+    private final Piston mBackPiston;
 
-    public ClimbingSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward, int backForward, int backBackward) {
+    private final TalonSRX mBackMotor;
+
+    public ClimbingSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward, int backForward, int backBackward, int backMotor) {
         mFrontLeftPiston = new Piston(frontLeftForward, frontLeftBackward);
         mFrontRighPiston = new Piston(frontRightForward, frontRightBackward);
         mBackPiston = new Piston(backForward, backBackward);
-    }
 
-    public void closeFrontRight() {
-        mFrontRighPiston.close();
-    }
-
-    public void closeFrontLeft() {
-        mFrontLeftPiston.close();
-    }
-    
-    public void openFrontRight() {
-        mFrontRighPiston.open();
-    }
-
-    public void openFrontLeft() {
-        mFrontLeftPiston.open();
+        mBackMotor = new TalonSRX(backMotor);
     }
 
     public void closeFront() {
-        closeFrontRight();
-        closeFrontLeft();
+        mFrontRighPiston.close();
+        mFrontLeftPiston.close();
     }
 
     public void openFront() {
