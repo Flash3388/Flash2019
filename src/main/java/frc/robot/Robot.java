@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.actions.ComplexActions;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
@@ -20,6 +21,7 @@ import frc.subsystems.DriveSystem;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveTrain;
+	public static Ultrasonic sonic;
 
 	public static XboxController xbox;
 
@@ -42,6 +44,8 @@ public class Robot extends IterativeFRCRobot {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+		sonic = new Ultrasonic(2,3);
+		sonic.setAutomaticMode(true);
 		mTable = NetworkTableInstance.getDefault().getTable("analysis");
 		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
 		driveTrain = new DriveSystem(10, 1, 3, 0, mTable);
@@ -83,8 +87,10 @@ public class Robot extends IterativeFRCRobot {
 
 	@Override
 	protected void teleopPeriodic() {
+		System.out.println(sonic.getRangeMM()); 
 	//	System.out.println("VISION : "+driveTrain.getVisionAngle()+" Actual "+ driveTrain.getAngle());
 		//	System.out.println(driveTrain.getDistance());
+		//System.out.println(driveTrain.getAngle());
 	}
 
 	@Override
