@@ -7,7 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.TableEntryListener;
 
-public class TargetSelect implements TableEntryListener {
+public class TargetSelectTable implements TableEntryListener {
     private final static String TARGET_SELECTION_TABLE = "target_selection_table";
     private final static String SELECT_NEXT_TARGET_KEY = "select_next_target_key";
     private final static String SELECT_TARGET_NUMBER_KEY = "select_target_number_key";
@@ -19,7 +19,7 @@ public class TargetSelect implements TableEntryListener {
 
     private TargetSelectListener mTargetSelectListener; // support single listener
 
-    public TargetSelect() {
+    public TargetSelectTable() {
         mTargetSelectTable = NetworkTableInstance.getDefault().getTable(TARGET_SELECTION_TABLE);
     }
     
@@ -37,10 +37,7 @@ public class TargetSelect implements TableEntryListener {
 
         if (targetSelectListener != null) {
             mSelectNextTargetEntryListenerHandle = mTargetSelectTable.addEntryListener(SELECT_NEXT_TARGET_KEY, this, EntryListenerFlags.kUpdate);
-
-            for (int i = 0 ; i < NUM_OF_POSSIBLE_TARGETS ; i++) {
-                mSelectTargetNumberListenerHandle = mTargetSelectTable.addEntryListener(SELECT_TARGET_NUMBER_KEY, this, EntryListenerFlags.kUpdate);
-            }
+            mSelectTargetNumberListenerHandle = mTargetSelectTable.addEntryListener(SELECT_TARGET_NUMBER_KEY, this, EntryListenerFlags.kUpdate);
         }
     }
 
