@@ -1,22 +1,22 @@
-package frc.actions;
+// package frc.actions;
 
-import frc.robot.Robot;
+// import frc.robot.Robot;
 
-import edu.flash3388.flashlib.robot.Action;
+// import edu.flash3388.flashlib.robot.Action;
 
-public class ReleaseAction extends Action {
+// public class ReleaseAction extends Action {
 
-    public ReleaseAction() {
-        requires(Robot.rollerGripper);
-    }
+//     public ReleaseAction() {
+//         requires(Robot.rollerGripper);
+//     }
 
-    @Override
-    protected void execute() {
-        Robot.rollerGripper.release();
-    }
+//     @Override
+//     protected void execute() {
+//         Robot.rollerGripper.release();
+//     }
 
-    @Override
-    protected void end() {
-        Robot.rollerGripper.stop();
-    }
-}
+//     @Override
+//     protected void end() {
+//         Robot.rollerGripper.stop();
+//     }
+// }

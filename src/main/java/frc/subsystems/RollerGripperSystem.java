@@ -7,13 +7,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.flash3388.flashlib.robot.Subsystem;
 import edu.flash3388.flashlib.robot.systems.Rotatable;
 
-public class RollerGripper extends Subsystem implements Rotatable{
+public class RollerGripperSystem extends Subsystem implements Rotatable {
 	public static final double CAPTURE_SPEED = 1.0;
 	public static final double RELEASE_SPEED = -CAPTURE_SPEED;
 
 	private TalonSRX mGripperMotor;
 
-	public RollerGripper(int gripperMotor) {
+	public RollerGripperSystem(int gripperMotor) {
 		mGripperMotor = new TalonSRX(gripperMotor);
 	}
 

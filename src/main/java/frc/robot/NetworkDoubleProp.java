@@ -16,7 +16,7 @@ public class NetworkDoubleProp implements DoubleProperty{
 
     @Override
     public Double getValue() {
-        return new Double (doubleEntry.getDouble(0));
+        return get();
     }
 
     @Override
@@ -26,6 +26,5 @@ public class NetworkDoubleProp implements DoubleProperty{
 
     @Override
     public void set(double arg0) {
-
     }
 }

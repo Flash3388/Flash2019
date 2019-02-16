@@ -1,19 +1,19 @@
 package frc.tables;
 
 public class TargetData {
-    private Double mXOffset;
-    private Double mDistance;
+    private double mXOffset;
+    private double mDistance;
 
     public TargetData(Double xOffset, Double distance) {
         mXOffset = xOffset;
         mDistance = distance;
     }
 
-    Double getXOffset() {
+    public double getXOffset() {
         return mXOffset;
     }
 
-    Double getDistance() {
+    public double getDistance() {
         return mDistance;
     }
 }

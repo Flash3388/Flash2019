@@ -2,6 +2,7 @@ package frc.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
 import edu.flash3388.flashlib.robot.systems.Rotatable;
@@ -12,26 +13,23 @@ public class LiftSystem extends Subsystem implements Rotatable {
     public final static double STALL_SPEED = 0.1;
     public final static double FALL_SPEED = 0.05;
 
-    private final DigitalInput mBottomSwitch;
-    private final DigitalInput mLowSwitch;
-    private final DigitalInput mHighSwitch;
+    // private final DigitalInput mBottomSwitch;
+    // private final DigitalInput mLowSwitch;
+    // private final DigitalInput mHighSwitch;
 
-    private final TalonSRX mLeftLiftMotor;
-    private final TalonSRX mRightLiftMotor;
+    private final VictorSPX mLeftLiftMotor;
+    private final VictorSPX mRightLiftMotor;
 
-    public LiftSystem(int leftLiftMotor, int rightLiftMotor, int lowSwitch, int highSwitch, int bottomSwitch) {
-        mBottomSwitch = new DigitalInput(bottomSwitch);
-        mLowSwitch = new DigitalInput(lowSwitch);
-        mHighSwitch = new DigitalInput(highSwitch);
-
-        mLeftLiftMotor = new TalonSRX(leftLiftMotor);
-        mRightLiftMotor = new TalonSRX(rightLiftMotor);
+    public LiftSystem(int leftLiftMotor, int rightLiftMotor) {
+        mLeftLiftMotor = new VictorSPX(leftLiftMotor);
+        mRightLiftMotor = new VictorSPX(rightLiftMotor);
+        mLeftLiftMotor.setInverted(true);
     }
 
     @Override
     public void rotate(double speed) {
         mRightLiftMotor.set(ControlMode.PercentOutput, speed);
-        mLeftLiftMotor.set(ControlMode.PercentOutput, -speed);
+        mLeftLiftMotor.set(ControlMode.PercentOutput, speed);
     }
 
     @Override
@@ -40,15 +38,15 @@ public class LiftSystem extends Subsystem implements Rotatable {
         mLeftLiftMotor.set(ControlMode.PercentOutput, 0);
     }
 
-    public boolean isLow() {
-        return mLowSwitch.get();
-    }
+    // public boolean isLow() {
+    //     return mLowSwitch.get();
+    // }
 
-    public boolean isHigh() {
-        return mHighSwitch.get();
-    }
+    // public boolean isHigh() {
+    //     return mHighSwitch.get();
+    // }
 
-    public boolean isBottom() {
-        return mBottomSwitch.get();
-    }
+    // public boolean isBottom() {
+    //     return mBottomSwitch.get();
+    // }
 }

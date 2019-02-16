@@ -19,6 +19,12 @@ public class ClimbingSystem extends Subsystem {
         mBackMotor = new TalonSRX(backMotor);
     }
 
+    public void switchAll() {
+        mFrontLeftPiston.toggle();
+        mFrontRighPiston.toggle();
+        mBackPiston.toggle();
+    }
+
     public void closeFront() {
         mFrontRighPiston.close();
         mFrontLeftPiston.close();

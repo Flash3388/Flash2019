@@ -29,7 +29,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
     public DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
 
-    private final ADXRS450_Gyro mGyro;
+    // private final ADXRS450_Gyro mGyro;
 
     private final TalonSRX mRearRight;
     private final TalonSRX mFrontRight;
@@ -45,8 +45,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mFrontLeft.setInverted(true);
         mRearLeft.setInverted(true);
         
-        mGyro = new ADXRS450_Gyro();
-        mGyro.calibrate();
+        // mGyro = new ADXRS450_Gyro();
+        // mGyro.calibrate();
 
         mFrontRight.configFactoryDefault();
         mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -105,7 +105,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
     
     public double getAngle() {
-        return mGyro.getAngle() % RobotMap.DEGREES_IN_A_CIRCLE;
+        //return mGyro.getAngle() % RobotMap.DEGREES_IN_A_CIRCLE;
+        return 0;
     }
 
     public void resetDistance() {
@@ -113,7 +114,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
 
     public void resetGyro() {
-        mGyro.reset();
+       // mGyro.reset();
     }
 
     public static int findClosest(int[] arr, int target) {
