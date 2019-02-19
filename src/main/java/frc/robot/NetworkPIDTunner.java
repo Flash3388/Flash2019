@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 

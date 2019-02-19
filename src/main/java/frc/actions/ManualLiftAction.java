@@ -1,8 +1,8 @@
 package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
+
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 
 public class ManualLiftAction extends Action {
 

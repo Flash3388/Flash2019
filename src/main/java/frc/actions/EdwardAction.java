@@ -1,6 +1,7 @@
 package frc.actions;
 
 import edu.flash3388.flashlib.robot.InstantAction;
+
 import frc.robot.Robot;
 
 public class EdwardAction extends InstantAction{

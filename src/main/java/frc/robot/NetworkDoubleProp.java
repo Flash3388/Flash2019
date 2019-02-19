@@ -1,5 +1,7 @@
 package frc.robot;
+
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class NetworkDoubleProp implements DoubleProperty{
