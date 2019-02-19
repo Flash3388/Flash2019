@@ -3,14 +3,14 @@ package frc.actions;
 import edu.flash3388.flashlib.robot.InstantAction;
 import frc.robot.Robot;
 
-public class CloseFront extends InstantAction {
+public class EdwardAction extends InstantAction{
 
-    public CloseFront() {
-        requires(Robot.climbSystem);
+    public EdwardAction() {
+        requires(Robot.hatchSystem);
     }
 
     @Override
     protected void execute() {
-        Robot.climbSystem.closeFront();
+        Robot.hatchSystem.toggle();
     }
 }

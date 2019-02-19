@@ -1,16 +1,16 @@
 package frc.tables;
 
 public class TargetData {
-    private double mXOffset;
+    private double mAngle;
     private double mDistance;
 
-    public TargetData(Double xOffset, Double distance) {
-        mXOffset = xOffset;
+    public TargetData(double angle, double distance) {
+        mAngle = angle;
         mDistance = distance;
     }
 
-    public double getXOffset() {
-        return mXOffset;
+    public double getAngle() {
+        return mAngle;
     }
 
     public double getDistance() {

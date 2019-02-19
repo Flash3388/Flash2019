@@ -15,39 +15,38 @@ public class DrivePIDAction extends Action {
     private double modifier;
 
     public DrivePIDAction(double margin, int timeInThreshold, double setpoint) {
-        requires(Robot.driveTrain);
+        requires(Robot.driveSystem);
 
         mMargin = margin;
         mTimeInThreshold = timeInThreshold;
-        Robot.driveTrain.distancePID.setSetPoint(() -> setpoint);
+        Robot.driveSystem.distancePID.setSetPoint(() -> setpoint);
     }
 
     @Override
     protected void initialize() {
-        Robot.driveTrain.resetDistance();
+        Robot.driveSystem.resetDistance();
 
-        Robot.driveTrain.distancePID.setEnabled(true);
-        Robot.driveTrain.distancePID.reset();
-        modifier = Robot.driveTrain.getMod();
+        Robot.driveSystem.distancePID.setEnabled(true);
+        Robot.driveSystem.distancePID.reset();
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void execute() {
-        double pidResult = -Robot.driveTrain.distancePID.calculate();
+        double pidResult = -Robot.driveSystem.distancePID.calculate();
 
-        if (!Robot.driveTrain.distancePID.isEnabled() || inDistanceThreshold()) {
+        if (!Robot.driveSystem.distancePID.isEnabled() || inDistanceThreshold()) {
             if (mThresholdStartTime < 1)
                 mThresholdStartTime = FlashUtil.millisInt();
         } else {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-        Robot.driveTrain.tankDrive(pidResult * modifier, pidResult * modifier);
+        Robot.driveSystem.tankDrive(pidResult * modifier, pidResult * modifier);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class DrivePIDAction extends Action {
     }
 
     private boolean inDistanceThreshold() {
-        double current = Robot.driveTrain.distancePID.getPIDSource().pidGet();
-        return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -mMargin, mMargin);
+        double current = Robot.driveSystem.distancePID.getPIDSource().pidGet();
+        return Mathf.constrained(Robot.driveSystem.rotationSetPoint.get() - current, -mMargin, mMargin);
     }
 }

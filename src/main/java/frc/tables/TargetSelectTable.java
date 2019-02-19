@@ -11,7 +11,7 @@ public class TargetSelectTable implements TableEntryListener {
     private final static String TARGET_SELECTION_TABLE = "target_selection_table";
     private final static String SELECT_NEXT_TARGET_KEY = "select_next_target_key";
     private final static String SELECT_TARGET_NUMBER_KEY = "select_target_number_key";
-    public final static int NUM_OF_POSSIBLE_TARGETS = 4;
+    public final static int NUM_OF_POSSIBLE_TARGETS = 3;
 
     private NetworkTable mTargetSelectTable;
     private int mSelectNextTargetEntryListenerHandle;

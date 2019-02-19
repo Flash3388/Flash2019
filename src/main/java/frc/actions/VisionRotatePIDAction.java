@@ -5,7 +5,6 @@ import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.util.FlashUtil;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import frc.robot.Robot;
-import frc.subsystems.DriveSystem;
 
 public class VisionRotatePIDAction extends Action {
     private final DoubleProperty mMargin;
@@ -14,36 +13,31 @@ public class VisionRotatePIDAction extends Action {
     private double mThresholdStartTime = 0;
     private double modifier;
     public VisionRotatePIDAction(DoubleProperty margin, int timeInThreshold, double setpoint) {
-        requires(Robot.driveTrain);
+        requires(Robot.driveSystem);
 
         mMargin = margin;
         mTimeInThreshold = timeInThreshold;
-        Robot.driveTrain.rotatePID.setSetPoint(()-> setpoint);
+        Robot.driveSystem.rotatePID.setSetPoint(()-> setpoint);
     }
 
     @Override
     protected void initialize() {
-        Robot.driveTrain.resetGyro();
+        Robot.driveSystem.resetGyro();
 
-        Robot.driveTrain.rotatePID.setEnabled(true);
-        Robot.driveTrain.rotatePID.reset();
-        modifier = Robot.driveTrain.getMod();
+        Robot.driveSystem.rotatePID.setEnabled(true);
+        Robot.driveSystem.rotatePID.reset();
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void execute() {
-        // if (FlashUtil.millisInt() - Robot.driveTrain.motherFuckingProperty.get() > 40) {
-        //     return;
-        // }
+        double pidResult = -Robot.driveSystem.rotatePID.calculate();
 
-        double pidResult = -Robot.driveTrain.rotatePID.calculate();
-
-        if (!Robot.driveTrain.rotatePID.isEnabled() || inDistanceThreshold()) {
+        if (!Robot.driveSystem.rotatePID.isEnabled() || inDistanceThreshold()) {
             if (mThresholdStartTime < 1)
                 mThresholdStartTime = FlashUtil.millisInt();
         }
@@ -51,8 +45,8 @@ public class VisionRotatePIDAction extends Action {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-        //Robot.driveTrain.tankDrive(pidResult * modifier, -pidResult * modifier);
-        Robot.driveTrain.tankDrive(pidResult*modifier, -pidResult*modifier);
+        
+        Robot.driveSystem.tankDrive(pidResult*modifier, -pidResult*modifier);
 
     }
     
@@ -64,7 +58,7 @@ public class VisionRotatePIDAction extends Action {
 
     private boolean inDistanceThreshold() {
         double margin = mMargin.get();
-        double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
-        return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -margin, margin);
+        double current = Robot.driveSystem.rotatePID.getPIDSource().pidGet();
+        return Mathf.constrained(Robot.driveSystem.rotationSetPoint.get() - current, -margin, margin);
     }
 }

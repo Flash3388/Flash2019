@@ -6,11 +6,11 @@ import frc.robot.Robot;
 public class CloseBack extends InstantAction {
 
     public CloseBack() {
-        requires(Robot.climbingSystem);
+        requires(Robot.climbSystem);
     }
 
     @Override
     protected void execute() {
-        Robot.climbingSystem.closeBack();
+        Robot.climbSystem.closeBack();
     }
 }

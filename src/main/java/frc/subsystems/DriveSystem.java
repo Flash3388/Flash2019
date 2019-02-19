@@ -29,7 +29,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
     public DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
 
-    // private final ADXRS450_Gyro mGyro;
+    private final ADXRS450_Gyro mGyro;
 
     private final TalonSRX mRearRight;
     private final TalonSRX mFrontRight;
@@ -45,11 +45,11 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mFrontLeft.setInverted(true);
         mRearLeft.setInverted(true);
         
-        // mGyro = new ADXRS450_Gyro();
-        // mGyro.calibrate();
+        mGyro = new ADXRS450_Gyro();
+        mGyro.calibrate();
 
-        mFrontRight.configFactoryDefault();
-        mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        mRearRight.configFactoryDefault();
+        mRearRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         pidsHandler();
         mRotationTunner = new NetworkPIDTunner();
@@ -59,10 +59,6 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public void arcadeDrive(double moveValue, double rotateValue) {
         double[] values = FlashDrive.calculate_arcadeDrive(moveValue, rotateValue);
         tankDrive(values[0], values[1]);
-    }
-
-    public double getMod() {
-        return mRotationTunner.getMod();
     }
 
     @Override
@@ -94,27 +90,26 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
             }
         };
 
-        distancePID = new PIDController(0.21, 0.0, 0.285, 0.0, distanceSetPoint, distancSource);
+        distancePID = new PIDController(0.0,0.0,0.0, 0.0, distanceSetPoint, distancSource);
         distancePID.setOutputLimit(-RobotMap.DRIVE_LIMIT, RobotMap.DRIVE_LIMIT);
-        rotatePID = new PIDController(0.04,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
+        rotatePID = new PIDController(0.0,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
         rotatePID.setOutputLimit(-RobotMap.ROTATE_LIMIT, RobotMap.ROTATE_LIMIT);
     }
 
     public double getDistance() {
-        return -(mFrontLeft.getSelectedSensorPosition() / RobotMap.PPR) * RobotMap.WHEEL_DIAMETER * Math.PI;
+        return -(mRearRight.getSelectedSensorPosition() * RobotMap.REVERSE_PPR) * RobotMap.WHEEL_DIAMETER * Math.PI;
     }
     
     public double getAngle() {
-        //return mGyro.getAngle() % RobotMap.DEGREES_IN_A_CIRCLE;
-        return 0;
+        return mGyro.getAngle() % RobotMap.DEGREES_IN_A_CIRCLE;
     }
 
     public void resetDistance() {
-        mFrontLeft.setSelectedSensorPosition(0);
+        mRearRight.setSelectedSensorPosition(0);
     }
 
     public void resetGyro() {
-       // mGyro.reset();
+       mGyro.reset();
     }
 
     public static int findClosest(int[] arr, int target) {

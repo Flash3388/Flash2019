@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.Action;
+import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.SystemAction;
@@ -13,15 +14,18 @@ import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
+import frc.actions.EdwardAction;
+import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.TargetSelectAction;
-import frc.subsystems.ClimbingSystem;
+import frc.subsystems.ClimbSystem;
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
@@ -30,8 +34,8 @@ import frc.tables.TargetSelectTable;
 public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private Compressor mCompressor;
 
-	public static DriveSystem driveTrain;
-	public static ClimbingSystem climbingSystem;
+	public static DriveSystem driveSystem;
+	public static ClimbSystem climbSystem;
 	public static HatchSystem hatchSystem;
 	public static LiftSystem liftSystem;
 	public static RollerGripperSystem rollerGripperSystem;
@@ -58,7 +62,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 
 		mCompressor = new Compressor();
-		mCompressor.stop();
+		mCompressor.start();
 		
 		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
 		xbox = new XboxController(0);
@@ -67,23 +71,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		
 		setupSystems();
 		setupTables();
-
-		xbox.Start.whenPressed(new InstantAction() {
-
-			@Override
-			protected void execute() {
-				climbingSystem.openFront();
-				climbingSystem.openBack();
-			}
-		});
-		xbox.Back.whenPressed(new InstantAction() {
-
-			@Override
-			protected void execute() {
-				climbingSystem.closeFront();
-				climbingSystem.closeBack();
-			}
-		});
+		setupButtons();
 	}
 
 	@Override
@@ -98,12 +86,12 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopInit() {
-		driveTrain.resetDistance();
+		driveSystem.resetDistance();
 	}
 
 	@Override
 	protected void teleopPeriodic() {
-
+		System.out.println(liftSystem.isDown());
 	}
 
 	@Override
@@ -132,64 +120,38 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		xbox.A.whenPressed(mTargetSelectActionList.get(0));
 		xbox.B.whenPressed(mTargetSelectActionList.get(1));
 		xbox.X.whenPressed(mTargetSelectActionList.get(2));
-		xbox.Y.whenPressed(mTargetSelectActionList.get(3));
 
 		mTargetDataTable.registerTargetDataListener(this);
 
 	}
 	
 	private void setupSystems() {
-		driveTrain = new DriveSystem(RobotMap.FRONT_RIGHT_MOTOR, RobotMap.REAR_RIGHT_MOTOR, 
-				RobotMap.FRONT_LEFT_MOTOR,RobotMap.REAR_LEFT_MOTOR);
-		driveTrain.setDefaultAction(new OperatorDriveAction());
+		driveSystem = new DriveSystem(RobotMap.FRONT_RIGHT_MOTOR, RobotMap.REAR_RIGHT_MOTOR, RobotMap.FRONT_LEFT_MOTOR,
+				RobotMap.REAR_LEFT_MOTOR);
+		driveSystem.setDefaultAction(new OperatorDriveAction());
 
-		climbingSystem = new ClimbingSystem(
-				RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
+		climbSystem = new ClimbSystem(RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
 				RobotMap.FRONT_LEFT_CHANNEL_FORWARD, RobotMap.FRONT_LEFT_CHANNEL_BACKWARD,
-				RobotMap.BACK_CHANNEL_FORWARD, RobotMap.BACK_CHANNEL_BACKWARD,
-				RobotMap.BACK_MOTOR);
-		
-		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
-		rollerGripperSystem = new RollerGripperSystem(7);
-		liftSystem = new LiftSystem(8, 9);
-		righJoystick.getButton(2).whileHeld(new Action(){
-		
-			@Override
-			protected void execute() {
-				rollerGripperSystem.rotate(-0.65);
-			}
-		
-			@Override
-			protected void end() {
-				rollerGripperSystem.stop();
-			}
-		});
-		righJoystick.getButton(1).whileHeld(new Action(){
-		
-			@Override
-			protected void execute() {
-				rollerGripperSystem.rotate(0.8);
-			}
-		
-			@Override
-			protected void end() {
-				rollerGripperSystem.stop();
-			}
-		});
-		// liftSystem.setDefaultAction(new SystemAction(new Action(){
-		
-		// 	@Override
-		// 	protected void execute() {
-		// 		double speed = xbox.RT.get() * 0.8;
-		// 		liftSystem.rotate(speed);//0.6 up moderate up and 0.4 stall
-		// 		System.out.println(speed);
-		// 	}
-		
-		// 	@Override
-		// 	protected void end() {
-		// 		liftSystem.stop();
-		// 	}
-		// }, liftSystem));
+				RobotMap.BACK_CHANNEL_FORWARD, RobotMap.BACK_CHANNEL_BACKWARD, RobotMap.BACK_MOTOR);
 
+		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
+
+		rollerGripperSystem = new RollerGripperSystem(RobotMap.ROLLER_GRIPPER_MOTOR);
+
+		liftSystem = new LiftSystem(RobotMap.LEFT_LIFT_MOTOR, RobotMap.RIGHT_LIFT_MOTOR, RobotMap.DOWN_SWITCH, RobotMap.UP_SWITCH);
+		liftSystem.setDefaultAction(new ManualLiftAction());
+	}
+	
+	private void setupButtons() {
+		xbox.Y.whenPressed(new EdwardAction());
+		//tmp
+		xbox.DPad.Down.whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				liftSystem.initDownCounter();
+			}
+		});
+		
 	}
 }

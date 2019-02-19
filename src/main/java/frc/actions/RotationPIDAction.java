@@ -4,47 +4,46 @@ import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.util.FlashUtil;
 import frc.robot.Robot;
-import frc.subsystems.DriveSystem;
 
 public class RotationPIDAction extends Action {
     private final double mMargin;
     private final int mTimeInThreshold;
 
     private double mThresholdStartTime = 0;
-    private double modifier = 0.4;
+    private double modifier = 0.6;
 
     public RotationPIDAction(double margin, int timeInThreshold, double setpoint) {
-        requires(Robot.driveTrain);
+        requires(Robot.driveSystem);
 
         mMargin = margin;
         mTimeInThreshold = timeInThreshold;
         
-        Robot.driveTrain.rotationSetPoint.set(setpoint);
+        Robot.driveSystem.rotationSetPoint.set(setpoint);
     }
 
     @Override
     protected void initialize() {
-        Robot.driveTrain.rotatePID.setEnabled(true);
-        Robot.driveTrain.rotatePID.reset();
+        Robot.driveSystem.rotatePID.setEnabled(true);
+        Robot.driveSystem.rotatePID.reset();
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void execute() {
-        double pidResult = Robot.driveTrain.rotatePID.calculate();
+        double pidResult = Robot.driveSystem.rotatePID.calculate();
 
-        if (!Robot.driveTrain.rotatePID.isEnabled() || inRotationThreshold()) {
+        if (!Robot.driveSystem.rotatePID.isEnabled() || inRotationThreshold()) {
             if (mThresholdStartTime < 1)
                 mThresholdStartTime = FlashUtil.millisInt();
         } else {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-        Robot.driveTrain.tankDrive(pidResult * modifier, -pidResult * modifier);
+        Robot.driveSystem.tankDrive(pidResult * modifier, -pidResult * modifier);
 
     }
 
@@ -55,8 +54,8 @@ public class RotationPIDAction extends Action {
     }
 
     private boolean inRotationThreshold() {
-        double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
-        System.out.println(Robot.driveTrain.rotatePID.getSetPoint().get() +" "+ current+" "+ mMargin);
-        return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -mMargin, mMargin);
+        double current = Robot.driveSystem.rotatePID.getPIDSource().pidGet();
+        System.out.println(Robot.driveSystem.rotatePID.getSetPoint().get() +" "+ current+" "+ mMargin);
+        return Mathf.constrained(Robot.driveSystem.rotationSetPoint.get() - current, -mMargin, mMargin);
     }
 }

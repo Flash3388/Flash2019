@@ -9,6 +9,10 @@ public class HatchSystem extends Subsystem {
         mPiston = new Piston(forward, backward);
     }
 
+    public void toggle(){
+        mPiston.toggle();
+    }
+
     public void grab() {
         mPiston.open();
     }

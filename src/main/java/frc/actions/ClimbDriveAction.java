@@ -1,34 +1,33 @@
 package frc.actions;
 
+import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
-import frc.subsystems.DriveSystem;
+import frc.robot.RobotMap;
 
 public class ClimbDriveAction extends Action {
-    private final double MIN = -0.12;
-    private final double MAX = 0.12;
 
     public ClimbDriveAction() {
-        requires(Robot.driveTrain);
+        requires(Robot.driveSystem);
     }
 
     @Override
     protected void initialize() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void execute() {
-        // double val = Robot.rightStick.getY();
+        double val = Robot.righJoystick.getY();
 
-        // if(DriveSystem.inBounds(val, MIN, MAX))
-        //     val = 0;
+        if(Mathf.constrained(val, -RobotMap.MIN_JOYSTICK_VALUE, RobotMap.MIN_JOYSTICK_VALUE))
+            val = 0;
         
-        // Robot.driveTrain.climbDrive(val);
+        Robot.climbSystem.drive(val);
     }
 }

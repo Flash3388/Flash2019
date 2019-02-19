@@ -1,18 +1,18 @@
 package frc.actions;
 
+import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class OperatorDriveAction extends Action {
-    private final double MIN = -0.12;
-    private final double MAX = 0.12;
 
     public OperatorDriveAction(){
-        requires(Robot.driveTrain);
+        requires(Robot.driveSystem);
     }
 
     protected void initiallize() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
@@ -20,17 +20,17 @@ public class OperatorDriveAction extends Action {
         double left = Robot.lefJoystick.getY();
         double right = Robot.righJoystick.getY();
 
-        if(right>= MIN && right <= MAX)
+        if(Mathf.constrained(right, -RobotMap.MIN_JOYSTICK_VALUE, RobotMap.MIN_JOYSTICK_VALUE))
             right = 0;
         
-        if (left >= MIN && left <= MAX)
+        if (Mathf.constrained(left, -RobotMap.MIN_JOYSTICK_VALUE, RobotMap.MIN_JOYSTICK_VALUE))
             left = 0;
     
-        Robot.driveTrain.tankDrive(right, left); //fuck off Tom
+        Robot.driveSystem.tankDrive(right, left); //fuck off Tom
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 }

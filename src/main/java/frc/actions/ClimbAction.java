@@ -6,12 +6,12 @@ import frc.robot.Robot;
 public class ClimbAction extends InstantAction {
 
     public ClimbAction() {
-        requires(Robot.climbingSystem);
+        requires(Robot.climbSystem);
     }
 
     @Override
     protected void execute() {
-        Robot.climbingSystem.openFront();
-        Robot.climbingSystem.openBack();
+        Robot.climbSystem.openFront();
+        Robot.climbSystem.openBack();
     }
 }

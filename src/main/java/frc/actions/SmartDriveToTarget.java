@@ -8,63 +8,64 @@ import frc.robot.RobotMap;
 import frc.subsystems.DriveSystem;
 
 public class SmartDriveToTarget extends Action {
+    private static final double MAX_DISTANCE = 300.0;
+
     private double mThresholdStartTime = 0.0;
     private double mRotateMargin;
 
     private int mRotateTimeInThreshold;
 
     public SmartDriveToTarget(double rotateMargin, int rotateTimeInThreshold, double distanceToTarget,
-            double xOffsetToTarget) {
-        requires(Robot.driveTrain);
+            double targetAngle) {
+        requires(Robot.driveSystem);
 
         mRotateMargin = rotateMargin;
         mRotateTimeInThreshold = rotateTimeInThreshold;
 
-        Robot.driveTrain.distanceSetPoint.set(distanceToTarget);
-        Robot.driveTrain.rotationSetPoint.set(
-                (double)DriveSystem.findClosest(new int[]{-90,-45,0,45,90},(int)Robot.driveTrain.getAngle()-(int)getVisionAngleDeg(xOffsetToTarget)));
+        Robot.driveSystem.distanceSetPoint.set(distanceToTarget);
+        Robot.driveSystem.rotationSetPoint.set(
+                (double)DriveSystem.findClosest(RobotMap.ANGLE_SET,(int)Robot.driveSystem.getAngle()-(int)targetAngle));
 
     }
 
     @Override
     protected void initialize() {
-        System.out.println(Robot.driveTrain.rotationSetPoint.get());
-        if (Robot.driveTrain.distanceSetPoint.get() == -1 || Robot.driveTrain.distanceSetPoint.get() > 300.0) {
+        System.out.println(Robot.driveSystem.rotationSetPoint.get());
+        if (Robot.driveSystem.distanceSetPoint.get() == -1 || Robot.driveSystem.distanceSetPoint.get() > MAX_DISTANCE) {
             System.out.println("Fucked");
             cancel();
         }
 
-        Robot.driveTrain.resetDistance();
-        // Robot.driveTrain.resetGyro();
+        Robot.driveSystem.resetDistance();
 
-        Robot.driveTrain.distancePID.setEnabled(true);
-        Robot.driveTrain.distancePID.reset();
+        Robot.driveSystem.distancePID.setEnabled(true);
+        Robot.driveSystem.distancePID.reset();
 
-        Robot.driveTrain.rotatePID.setEnabled(true);
-        Robot.driveTrain.rotatePID.reset();
+        Robot.driveSystem.rotatePID.setEnabled(true);
+        Robot.driveSystem.rotatePID.reset();
     }
 
     @Override
     protected void end() {
-        Robot.driveTrain.stop();
+        Robot.driveSystem.stop();
     }
 
     @Override
     protected void execute() {
-        double distanceResult = -Robot.driveTrain.distancePID.calculate();
-        double rotationResult = Robot.driveTrain.rotatePID.calculate();
-        double distance = Robot.driveTrain.getDistance();
+        double distanceResult = -Robot.driveSystem.distancePID.calculate();
+        double rotationResult = Robot.driveSystem.rotatePID.calculate();
+        double distance = Robot.driveSystem.getDistance();
         double ratio;
 
-        if(distance>Robot.driveTrain.distancePID.getSetPoint().get())
+        if(distance>Robot.driveSystem.distancePID.getSetPoint().get())
             ratio = 1;
         else
-            ratio = distance / Robot.driveTrain.distancePID.getSetPoint().get();
+            ratio = distance / Robot.driveSystem.distancePID.getSetPoint().get();
         
-        if (ratio < 0.56)
-            ratio -= 0.56;
+        if (ratio < RobotMap.TURNING_RATIO)
+            ratio -= RobotMap.TURNING_RATIO;
 
-        if (!Robot.driveTrain.rotatePID.isEnabled() || (inRotationThreshold())) {
+        if (!Robot.driveSystem.rotatePID.isEnabled() || (inRotationThreshold())) {
             if (mThresholdStartTime < 1)
                 mThresholdStartTime = FlashUtil.millisInt();
         } else {
@@ -72,7 +73,7 @@ public class SmartDriveToTarget extends Action {
                 mThresholdStartTime = 0;
         }
 
-        Robot.driveTrain.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * 0.6);
+        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * 0.6);
     }
 
     @Override
@@ -83,12 +84,7 @@ public class SmartDriveToTarget extends Action {
 
     private boolean inRotationThreshold() {
         double margin = mRotateMargin;
-        double current = Robot.driveTrain.rotatePID.getPIDSource().pidGet();
-        return Mathf.constrained(Robot.driveTrain.rotationSetPoint.get() - current, -margin, margin);
-    }
-
-    public double getVisionAngleDeg(double xoffset) {
-        double angle = -xoffset * (RobotMap.CAMERA_FOV/RobotMap.CAMERA_WIDTH);
-        return angle < 0 ? angle  +10 : angle;
+        double current = Robot.driveSystem.rotatePID.getPIDSource().pidGet();
+        return Mathf.constrained(Robot.driveSystem.rotationSetPoint.get() - current, -margin, margin);
     }
 }
