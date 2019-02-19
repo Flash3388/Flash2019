@@ -4,28 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
-import edu.flash3388.flashlib.robot.Action;
-import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
-import edu.flash3388.flashlib.robot.SystemAction;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
+import frc.subsystems.ClimbSystem;
+
 import frc.actions.EdwardAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.TargetSelectAction;
-import frc.subsystems.ClimbSystem;
+
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
