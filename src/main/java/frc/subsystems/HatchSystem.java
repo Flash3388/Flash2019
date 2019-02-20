@@ -6,7 +6,7 @@ public class HatchSystem extends Subsystem {
     private final Piston mPiston;
 
     public HatchSystem(int forward, int backward) {
-        mPiston = new Piston(forward, backward);
+        mPiston = new Piston(0, forward, backward);
     }
 
     public void toggle(){

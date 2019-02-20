@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 public class Piston {
     private final DoubleSolenoid solenoid;
 
-    public Piston(int forwardChannel, int reverseChannel) {
-        solenoid = new DoubleSolenoid(forwardChannel, reverseChannel);
+    public Piston(int pcm, int forwardChannel, int reverseChannel) {
+        solenoid = new DoubleSolenoid(pcm, forwardChannel, reverseChannel);
     }
 
     public void open() {

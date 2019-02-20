@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
-import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
@@ -20,9 +19,12 @@ import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
+import frc.actions.CaptureAction;
 import frc.actions.EdwardAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
+import frc.actions.ReleaseAction;
+import frc.actions.SimpleManualLiftAction;
 import frc.actions.TargetSelectAction;
 
 import frc.tables.TargetData;
@@ -90,7 +92,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopPeriodic() {
-		System.out.println(liftSystem.isDown());
 	}
 
 	@Override
@@ -143,14 +144,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
-		//tmp
-		xbox.DPad.Down.whenPressed(new InstantAction(){
-		
-			@Override
-			protected void execute() {
-				liftSystem.initDownCounter();
-			}
-		});
-		
+		xbox.RB.whenPressed(new CaptureAction());
+		xbox.LB.whenPressed(new ReleaseAction());
 	}
 }

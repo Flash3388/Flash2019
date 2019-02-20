@@ -1,13 +1,13 @@
 package frc.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
 import edu.flash3388.flashlib.robot.systems.Rotatable;
-import edu.wpi.first.wpilibj.Counter;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+
 import frc.robot.RobotMap;
 
 public class LiftSystem extends Subsystem implements Rotatable {
@@ -15,8 +15,8 @@ public class LiftSystem extends Subsystem implements Rotatable {
     public final static double STALL_SPEED = 0.2;
     public final static double FALL_SPEED = 0.05;
 
-    private final Counter mUpCounter;
-    private final Counter mDownCounter;
+    private final DigitalInput mDownSwitch;
+    private final DigitalInput mUpSwitch;
 
     private final VictorSPX mLeftLiftMotor;
     private final VictorSPX mRightLiftMotor;
@@ -27,25 +27,18 @@ public class LiftSystem extends Subsystem implements Rotatable {
         mLeftLiftMotor.setInverted(true);
 
         
-        mUpCounter = new Counter(new DigitalInput(downSwitch));
-        mDownCounter = new Counter(new DigitalInput(upSwitch));
+        mDownSwitch = new DigitalInput(downSwitch);
+        mUpSwitch = new DigitalInput(upSwitch);
     }
 
     public boolean isDown() {
-        return mDownCounter.get() > 0;
-    }
-
-    public void initDownCounter() {
-        mDownCounter.reset();
+        return !mDownSwitch.get();
     }
 
     public boolean isUp() {
-        return mUpCounter.get() > 0;
+        return !mUpSwitch.get();
     }
 
-    public void initUpCounter() {
-        mUpCounter.reset();
-    }
 
     public void fall() {
         if(!isDown())

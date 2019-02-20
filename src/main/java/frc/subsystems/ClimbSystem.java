@@ -14,9 +14,9 @@ public class ClimbSystem extends Subsystem {
 
     public ClimbSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward,
             int backForward, int backBackward, int backMotor) {
-        mFrontLeftPiston = new Piston(frontLeftForward, frontLeftBackward);
-        mFrontRighPiston = new Piston(frontRightForward, frontRightBackward);
-        mBackPiston = new Piston(backForward, backBackward);
+        mFrontLeftPiston = new Piston(0, frontLeftForward, frontLeftBackward);
+        mFrontRighPiston = new Piston(0, frontRightForward, frontRightBackward);
+        mBackPiston = new Piston(0, backForward, backBackward);
 
         mBackMotor = new TalonSRX(backMotor);
     }
