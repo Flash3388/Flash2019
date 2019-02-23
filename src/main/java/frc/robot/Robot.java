@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
+import edu.flash3388.flashlib.robot.ActionGroup;
+import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
@@ -20,16 +22,19 @@ import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
 import frc.actions.CaptureAction;
+import frc.actions.DrivePIDAction;
 import frc.actions.EdwardAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.ReleaseAction;
 import frc.actions.SimpleManualLiftAction;
+import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
 
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
+import frc.tables.TargetSelectListener;
 import frc.tables.TargetSelectTable;
 
 public class Robot extends IterativeFRCRobot implements TargetDataListener {
@@ -62,7 +67,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 
-		mCompressor = new Compressor();
+		mCompressor = new Compressor(0);
 		mCompressor.start();
 		
 		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
@@ -92,6 +97,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopPeriodic() {
+		pidHandler.setSource(driveSystem.getDistance());
 	}
 
 	@Override
@@ -106,7 +112,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	public void onTargetData(TargetData targetData) {
-
+		new SmartDriveToTarget(0.5, 1000, targetData.getDistance(), targetData.getAngle()).start();;
 	}
 
 	private void setupTables() {
@@ -144,7 +150,30 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
-		xbox.RB.whenPressed(new CaptureAction());
-		xbox.LB.whenPressed(new ReleaseAction());
+		xbox.RB.whileHeld(new CaptureAction());
+		xbox.LB.whileHeld(new ReleaseAction());
+		xbox.Start.whenPressed(new ActionGroup().addSequential(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				climbSystem.openBack(); //here I open the back piston 
+			}
+		}).addWaitAction(1)// here I add delay
+		.addSequential(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				climbSystem.openFront();//here I open back
+			}
+		}));
+		
+		xbox.Back.whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				climbSystem.closeBack();
+				climbSystem.closeFront();
+			}
+		});
 	}
 }

@@ -26,13 +26,12 @@ public class SmartDriveToTarget extends Action {
 
         Robot.driveSystem.distanceSetPoint.set(distanceToTarget);
         Robot.driveSystem.rotationSetPoint.set(
-                (double)DriveSystem.findClosest(RobotMap.ANGLE_SET,(int)Robot.driveSystem.getAngle()-(int)targetAngle));
-
+                (double)DriveSystem.findClosest(RobotMap.ANGLE_SET,(int)Robot.driveSystem.getAngle()+(int)targetAngle));
     }
 
     @Override
     protected void initialize() {
-        System.out.println(Robot.driveSystem.rotationSetPoint.get());
+        System.out.println(Robot.driveSystem.distanceSetPoint.get());
         if (Robot.driveSystem.distanceSetPoint.get() == -1 || Robot.driveSystem.distanceSetPoint.get() > MAX_DISTANCE) {
             System.out.println("Fucked");
             cancel();
@@ -74,7 +73,6 @@ public class SmartDriveToTarget extends Action {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-
         Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * 0.6);
     }
 

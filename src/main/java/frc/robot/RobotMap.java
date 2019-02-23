@@ -26,14 +26,14 @@ public class RobotMap {
     public static final int DOWN_SWITCH = 2;
     public static final int UP_SWITCH = 3;
     public static final double LIFT_SPEED = 0.8;
-    public static final double FALL_SPEED = 0.05;
+    public static final double FALL_SPEED = 0.04;
     public static final double STALL_SPEED = 0.2;
 
     public static final double DRIVE_LIMIT = 1.0;
     public static final double ROTATE_LIMIT = 1.0;
 
     public static final int[] ANGLE_SET = { -125, -90, -45, 0, 45, 90, 125 };
-    public static final double TURNING_RATIO = 0.56;
+    public static final double TURNING_RATIO = 0.5;//0.56
     public static final double MIN_JOYSTICK_VALUE = 0.12;
 
     public static final double CAMERA_FOV = 65.0;

@@ -21,15 +21,22 @@ public class TargetSelectTable implements TableEntryListener {
 
     public TargetSelectTable() {
         mTargetSelectTable = NetworkTableInstance.getDefault().getTable(TARGET_SELECTION_TABLE);
+        mTargetSelectTable.getEntry(SELECT_TARGET_NUMBER_KEY).setDouble(-1);
+        mTargetSelectTable.getEntry(SELECT_NEXT_TARGET_KEY).setBoolean(false);
     }
     
     public void selectNextTarget() {
+        System.out.println("next bitch");
         mTargetSelectTable.getEntry(SELECT_NEXT_TARGET_KEY).setBoolean(true);
     }
 
     public void selectTarget(int targetNumber) {
-        if (targetNumber >= 0 && targetNumber < NUM_OF_POSSIBLE_TARGETS)
-            mTargetSelectTable.getEntry(SELECT_TARGET_NUMBER_KEY).setDouble(targetNumber);
+        if (targetNumber >= 0 && targetNumber < NUM_OF_POSSIBLE_TARGETS) {
+            if (mTargetSelectTable.getEntry(SELECT_TARGET_NUMBER_KEY).getDouble(targetNumber) != targetNumber) 
+                mTargetSelectTable.getEntry(SELECT_TARGET_NUMBER_KEY).setDouble(targetNumber);
+            else
+                selectNextTarget();
+        }
     }
 
     public void registerSelectTargetListener(TargetSelectListener targetSelectListener) {

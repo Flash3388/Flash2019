@@ -29,4 +29,8 @@ public class SuffleboardHandler {
         limit.setDouble(0.0);
         pidSource.setDouble(0.0);
     }
+
+    public void setSource(double val) {
+        pidSource.setDouble(val);
+    }
 }

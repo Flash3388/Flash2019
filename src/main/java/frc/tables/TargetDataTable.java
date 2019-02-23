@@ -9,7 +9,7 @@ import edu.wpi.first.networktables.TableEntryListener;
 
 public class TargetDataTable implements TableEntryListener {
     private final static String TARGET_DATA_TABLE = "target_data_table";
-    private final static String ANGLE_KEY = "angle_key";
+    private final static String ANGLE_KEY = "angle_in_degrees_key";
     private final static String VISION_DISTANCE_KEY = "vision_distance_key";
     private final static String DONE_KEY = "done_key";
     public final double DONE=1.0;
@@ -33,7 +33,7 @@ public class TargetDataTable implements TableEntryListener {
     }
 
     public double getAngle(double defaultValue) {
-        return mTargetDataTable.getEntry(VISION_DISTANCE_KEY).getDouble(defaultValue);
+        return mTargetDataTable.getEntry(ANGLE_KEY).getDouble(defaultValue);
     }
 
     public void setVisionDistance(double visionDistance) {
