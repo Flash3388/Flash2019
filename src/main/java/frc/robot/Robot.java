@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
+import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
@@ -13,8 +14,9 @@ import edu.flash3388.flashlib.robot.hid.XboxController;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-
+import edu.wpi.first.wpilibj.Timer;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
@@ -22,6 +24,8 @@ import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
 import frc.actions.CaptureAction;
+import frc.actions.ClimbAction;
+import frc.actions.ClimbDriveAction;
 import frc.actions.DrivePIDAction;
 import frc.actions.EdwardAction;
 import frc.actions.ManualLiftAction;
@@ -57,6 +61,11 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private TargetSelectTable mTargetSelectTable;
 	private TargetDataTable mTargetDataTable;
 
+	private DigitalInput dio0;
+	private DigitalInput dio6;
+	private DigitalInput dio1;
+	private DigitalInput dio4;
+	private DigitalInput dio5;
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
@@ -68,16 +77,22 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 
 		mCompressor = new Compressor(0);
-		mCompressor.start();
+		mCompressor.stop();
 		
-		pidHandler = new SuffleboardHandler(NetworkTableInstance.getDefault().getTable("change me"));
 		xbox = new XboxController(0);
-		righJoystick = new Joystick(1, 5);
-		lefJoystick = new Joystick(2, 5);
+		// righJoystick = new Joystick(1, 5);
+		// lefJoystick = new Joystick(2, 5);
 		
 		setupSystems();
 		setupTables();
 		setupButtons();
+
+		dio1 = new DigitalInput(1);
+		dio4 = new DigitalInput(4);
+		dio5 = new DigitalInput(5);
+
+		dio0 = new DigitalInput(0);
+		dio6 = new DigitalInput(6);
 	}
 
 	@Override
@@ -92,12 +107,12 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopInit() {
-		driveSystem.resetDistance();
+		//driveSystem.resetDistance();
 	}
 
 	@Override
 	protected void teleopPeriodic() {
-		pidHandler.setSource(driveSystem.getDistance());
+		System.out.println(("dio1: " +dio1.get()+ " dio4: " + dio4.get() + " dio5: " + dio5.get()+" dio6: "+dio6.get()+" dio0: "+dio0.get())); 
 	}
 
 	@Override
@@ -139,6 +154,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		climbSystem = new ClimbSystem(RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
 				RobotMap.FRONT_LEFT_CHANNEL_FORWARD, RobotMap.FRONT_LEFT_CHANNEL_BACKWARD,
 				RobotMap.BACK_CHANNEL_FORWARD, RobotMap.BACK_CHANNEL_BACKWARD, RobotMap.BACK_MOTOR);
+		climbSystem.setDefaultAction(new ClimbDriveAction());
 
 		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
 
@@ -152,27 +168,36 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		xbox.Y.whenPressed(new EdwardAction());
 		xbox.RB.whileHeld(new CaptureAction());
 		xbox.LB.whileHeld(new ReleaseAction());
-		xbox.Start.whenPressed(new ActionGroup().addSequential(new InstantAction(){
-		
-			@Override
-			protected void execute() {
-				climbSystem.openBack(); //here I open the back piston 
-			}
-		}).addWaitAction(1)// here I add delay
-		.addSequential(new InstantAction(){
-		
-			@Override
-			protected void execute() {
-				climbSystem.openFront();//here I open back
-			}
-		}));
-		
+		xbox.Start.whenPressed(new ClimbAction());
 		xbox.Back.whenPressed(new InstantAction(){
 		
 			@Override
 			protected void execute() {
 				climbSystem.closeBack();
 				climbSystem.closeFront();
+			}
+		});
+		xbox.DPad.Down.whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				climbSystem.switchBack();
+			}
+		});
+
+		xbox.DPad.Left.whenPressed(new InstantAction() {
+
+			@Override
+			protected void execute() {
+				climbSystem.switchLeftFront();
+			}
+		});
+
+		xbox.DPad.Right.whenPressed(new InstantAction() {
+
+			@Override
+			protected void execute() {
+				climbSystem.switchRightFront();
 			}
 		});
 	}

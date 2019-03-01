@@ -1,6 +1,7 @@
 package frc.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
@@ -11,10 +12,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.RobotMap;
 
 public class LiftSystem extends Subsystem implements Rotatable {
-    public final static double LIFT_SPEED = 0.65;
-    public final static double STALL_SPEED = 0.2;
-    public final static double FALL_SPEED = 0.05;
-
     private final DigitalInput mDownSwitch;
     private final DigitalInput mUpSwitch;
 
@@ -24,8 +21,7 @@ public class LiftSystem extends Subsystem implements Rotatable {
     public LiftSystem(int leftLiftMotor, int rightLiftMotor, int downSwitch, int upSwitch) {
         mLeftLiftMotor = new VictorSPX(leftLiftMotor);
         mRightLiftMotor = new VictorSPX(rightLiftMotor);
-        mLeftLiftMotor.setInverted(true);
-
+        mLeftLiftMotor.follow(mRightLiftMotor,FollowerType.PercentOutput);
         
         mDownSwitch = new DigitalInput(downSwitch);
         mUpSwitch = new DigitalInput(upSwitch);
@@ -64,7 +60,10 @@ public class LiftSystem extends Subsystem implements Rotatable {
     @Override
     public void rotate(double speed) {
         mRightLiftMotor.set(ControlMode.PercentOutput, speed);
-        mLeftLiftMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void rotate(ControlMode mode, double speed) {
+        mRightLiftMotor.set(mode, speed);
     }
 
     @Override

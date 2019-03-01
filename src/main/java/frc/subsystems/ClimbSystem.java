@@ -19,6 +19,19 @@ public class ClimbSystem extends Subsystem {
         mBackPiston = new Piston(0, backForward, backBackward);
 
         mBackMotor = new TalonSRX(backMotor);
+        mBackMotor.setInverted(true);
+    }
+
+    public void switchBack() {
+        mBackPiston.toggle();
+    }
+
+    public void switchLeftFront() {
+        mFrontLeftPiston.toggle();
+    }
+
+    public void switchRightFront() {
+        mFrontRighPiston.toggle();
     }
 
     public void switchAll() {

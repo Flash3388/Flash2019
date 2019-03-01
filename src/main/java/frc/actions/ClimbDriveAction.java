@@ -24,7 +24,7 @@ public class ClimbDriveAction extends Action {
 
     @Override
     protected void execute() {
-        double val = Robot.righJoystick.getY();
+        double val = Robot.xbox.LeftStick.getY();
 
         if(Mathf.constrained(val, -RobotMap.MIN_JOYSTICK_VALUE, RobotMap.MIN_JOYSTICK_VALUE))
             val = 0;
