@@ -28,7 +28,7 @@ public class RobotMap {
     public static final int DOWN_SWITCH = 2;
     public static final int UP_SWITCH = 3;
     public static final double LIFT_SPEED = 0.812345;
-    public static final double FALL_SPEED = -0.42356789;
+    public static final double FALL_SPEED = -0.6;
     public static final double STALL_SPEED = 0.075;
 
     public static final double DRIVE_LIMIT = 1.0;
