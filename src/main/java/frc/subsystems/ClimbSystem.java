@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ClimbSystem extends Subsystem {
     private final Piston mFrontRighPiston;
@@ -12,14 +13,31 @@ public class ClimbSystem extends Subsystem {
 
     private final TalonSRX mBackMotor;
 
+    private final DigitalInput closeRight;
+    private final DigitalInput closeLeft;
+    private final DigitalInput closeBack;
+
     public ClimbSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward,
-            int backForward, int backBackward, int backMotor) {
+            int backForward, int backBackward, int backMotor, int closeRightSensor, int closeLeftSensor,
+            int closeBackSensor) {
         mFrontLeftPiston = new Piston(0, frontLeftForward, frontLeftBackward);
         mFrontRighPiston = new Piston(0, frontRightForward, frontRightBackward);
         mBackPiston = new Piston(0, backForward, backBackward);
 
         mBackMotor = new TalonSRX(backMotor);
         mBackMotor.setInverted(true);
+
+        closeRight = new DigitalInput(closeRightSensor);
+        closeLeft = new DigitalInput(closeLeftSensor);
+        closeBack = new DigitalInput(closeBackSensor);
+    }
+    
+    public boolean isFrontClosed() {
+        return closeRight.get() && closeLeft.get();
+    }
+
+    public boolean isBackClosed() {
+        return !closeBack.get();
     }
 
     public void switchBack() {
