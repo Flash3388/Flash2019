@@ -8,6 +8,7 @@ import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
+import edu.flash3388.flashlib.robot.Scheduler;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import frc.actions.CloseBack;
+import frc.actions.CloseFront;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
@@ -80,8 +83,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		mCompressor.stop();
 		
 		xbox = new XboxController(0);
-		// righJoystick = new Joystick(1, 5);
-		// lefJoystick = new Joystick(2, 5);
+		righJoystick = new Joystick(1, 5);
+		lefJoystick = new Joystick(2, 5);
 		
 		setupSystems();
 		setupTables();
@@ -107,12 +110,12 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopInit() {
-		//driveSystem.resetDistance();
+		//new OperatorDriveAction().start();
 	}
 
 	@Override
 	protected void teleopPeriodic() {
-		System.out.println(("dio1: " +dio1.get()+ " dio4: " + dio4.get() + " dio5: " + dio5.get()+" dio6: "+dio6.get()+" dio0: "+dio0.get())); 
+		//System.out.println(("dio1: " +dio1.get()+ " dio4: " + dio4.get() + " dio5: " + dio5.get()+" dio6: "+dio6.get()+" dio0: "+dio0.get()));
 	}
 
 	@Override
@@ -154,11 +157,36 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		climbSystem = new ClimbSystem(RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
 				RobotMap.FRONT_LEFT_CHANNEL_FORWARD, RobotMap.FRONT_LEFT_CHANNEL_BACKWARD,
 				RobotMap.BACK_CHANNEL_FORWARD, RobotMap.BACK_CHANNEL_BACKWARD, RobotMap.BACK_MOTOR);
-		climbSystem.setDefaultAction(new ClimbDriveAction());
+		//climbSystem.setDefaultAction(new ClimbDriveAction());
 
 		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
 
 		rollerGripperSystem = new RollerGripperSystem(RobotMap.ROLLER_GRIPPER_MOTOR);
+		rollerGripperSystem.setDefaultAction(new Action() {
+            {
+                requires(rollerGripperSystem);
+            }
+
+            @Override
+            protected void execute() {
+                double speed = xbox.RightStick.AxisY.get();
+                if (Math.abs(speed) < 0.2) {
+                    rollerGripperSystem.stop();
+                    return;
+                }
+
+                if (speed > 0.0) {
+                    rollerGripperSystem.capture();
+                } else {
+                    rollerGripperSystem.release();
+                }
+            }
+
+            @Override
+            protected void end() {
+                rollerGripperSystem.stop();
+            }
+        });
 
 		liftSystem = new LiftSystem(RobotMap.LEFT_LIFT_MOTOR, RobotMap.RIGHT_LIFT_MOTOR, RobotMap.DOWN_SWITCH, RobotMap.UP_SWITCH);
 		liftSystem.setDefaultAction(new ManualLiftAction());
@@ -166,39 +194,42 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
-		xbox.RB.whileHeld(new CaptureAction());
-		xbox.LB.whileHeld(new ReleaseAction());
+		//xbox.RB.whileHeld(new CaptureAction());
+		//xbox.LB.whileHeld(new ReleaseAction());
 		xbox.Start.whenPressed(new ClimbAction());
 		xbox.Back.whenPressed(new InstantAction(){
-		
+
 			@Override
 			protected void execute() {
 				climbSystem.closeBack();
 				climbSystem.closeFront();
 			}
 		});
-		xbox.DPad.Down.whenPressed(new InstantAction(){
-		
-			@Override
-			protected void execute() {
-				climbSystem.switchBack();
-			}
-		});
 
-		xbox.DPad.Left.whenPressed(new InstantAction() {
-
-			@Override
-			protected void execute() {
-				climbSystem.switchLeftFront();
-			}
-		});
+		xbox.DPad.getDown().whenPressed(new CloseFront());
+		xbox.DPad.getUp().whenPressed(new CloseBack());
 
 		xbox.DPad.Right.whenPressed(new InstantAction() {
+            @Override
+            protected void execute() {
+                driveSystem.cancelCurrentAction();
+                climbSystem.cancelCurrentAction();
+            }
+        });
 
-			@Override
-			protected void execute() {
-				climbSystem.switchRightFront();
-			}
-		});
+		righJoystick.getButton(1).whenPressed(new InstantAction() {
+            boolean isOn = false;
+
+		    @Override
+            protected void execute() {
+                if (isOn) {
+                    mCompressor.stop();
+                } else {
+                    mCompressor.start();
+                }
+
+                isOn = !isOn;
+            }
+        });
 	}
 }
