@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.flash3388.flashlib.robot.Subsystem;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.RobotMap;
 
 public class ClimbSystem extends Subsystem {
     private final Piston mFrontRighPiston;
@@ -34,8 +35,8 @@ public class ClimbSystem extends Subsystem {
         closeLeft = new DigitalInput(closeLeftSensor);
         closeBack = new DigitalInput(closeBackSensor);
 
-        frontSensor = new DigitalInput(7);
-		rearSensor = new DigitalInput(8);
+        frontSensor = new DigitalInput(RobotMap.FRONT_SENSOR);
+		rearSensor = new DigitalInput(RobotMap.REAR_SENSOR);
     }
     
     public boolean isFrontClosed() {

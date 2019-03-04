@@ -21,6 +21,10 @@ public class OperatorDriveAction extends Action {
         double left = Robot.lefJoystick.getY();
         double right = Robot.righJoystick.getY();
 
+        if (Robot.lefJoystick.getButton(3).get()) {
+            right = left;
+        }
+
         if(Mathf.constrained(right, -RobotMap.MIN_JOYSTICK_VALUE, RobotMap.MIN_JOYSTICK_VALUE))
             right = 0;
         
