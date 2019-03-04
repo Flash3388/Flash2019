@@ -22,11 +22,22 @@ public class ClimbAction extends Action {
         t.stop();
     }
 
+    private boolean isAllowedToDrive()
+    {
+        boolean frontOnClear = !Robot.climbSystem.isFrontSensorOverStep() && !Robot.climbSystem.isFrontClosed();
+        boolean frontPistonIsUp = Robot.climbSystem.isFrontSensorOverStep() && Robot.climbSystem.isFrontClosed();
+        boolean rearOnClear = !Robot.climbSystem.isRearSensorOverStep() || 
+                              (Robot.climbSystem.isFrontSensorOverStep() && Robot.climbSystem.isBackClosed());
+
+        System.out.println("frontOnClear:" + frontOnClear + " frontPistonIsUp:" + frontPistonIsUp + " rearOnClear:" + rearOnClear);
+        return frontOnClear && frontPistonIsUp && rearOnClear;
+    }
+
     @Override
     protected void execute() {
         double speed = Robot.xbox.LeftStick.getY() * 0.8;
 
-        if(speed>0.16)
+        if(speed>0.16 && isAllowedToDrive())
             Robot.climbSystem.drive(speed);
         else
             Robot.climbSystem.stop();

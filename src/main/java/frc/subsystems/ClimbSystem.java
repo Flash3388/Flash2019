@@ -17,6 +17,9 @@ public class ClimbSystem extends Subsystem {
     private final DigitalInput closeLeft;
     private final DigitalInput closeBack;
 
+    private DigitalInput frontSensor;
+	private DigitalInput rearSensor;
+
     public ClimbSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward,
             int backForward, int backBackward, int backMotor, int closeRightSensor, int closeLeftSensor,
             int closeBackSensor) {
@@ -30,6 +33,9 @@ public class ClimbSystem extends Subsystem {
         closeRight = new DigitalInput(closeRightSensor);
         closeLeft = new DigitalInput(closeLeftSensor);
         closeBack = new DigitalInput(closeBackSensor);
+
+        frontSensor = new DigitalInput(7);
+		rearSensor = new DigitalInput(8);
     }
     
     public boolean isFrontClosed() {
@@ -38,6 +44,14 @@ public class ClimbSystem extends Subsystem {
 
     public boolean isBackClosed() {
         return !closeBack.get();
+    }
+
+    public boolean isFrontSensorOverStep() {
+        return frontSensor.get();
+    }
+
+    public boolean isRearSensorOverStep() {
+        return rearSensor.get();
     }
 
     public void switchBack() {
