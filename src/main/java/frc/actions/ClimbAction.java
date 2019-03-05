@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 
 public class ClimbAction extends Action {
-    Timer t = new Timer();
+    protected Timer t = new Timer();
 
     public ClimbAction() {
         requires(Robot.climbSystem);
@@ -13,6 +13,10 @@ public class ClimbAction extends Action {
 
     @Override
     protected void initialize() {
+        openBackAndFront();
+    }
+
+    protected void openBackAndFront() {
         t.reset();
         t.start();
         Robot.climbSystem.openBack();
@@ -22,7 +26,7 @@ public class ClimbAction extends Action {
         t.stop();
     }
 
-    private boolean isAllowedToDrive()
+    protected boolean isAllowedToDrive()
     {
         boolean frontOnClear = !Robot.climbSystem.isFrontSensorOverStep() && !Robot.climbSystem.isFrontClosed();
         boolean frontPistonIsUp = Robot.climbSystem.isFrontSensorOverStep() && Robot.climbSystem.isFrontClosed();

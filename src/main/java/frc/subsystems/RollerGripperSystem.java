@@ -10,26 +10,26 @@ import frc.robot.RobotMap;
 
 public class RollerGripperSystem extends Subsystem implements Rotatable {
 
-	private TalonSRX mGripperMotor;
+    private TalonSRX mGripperMotor;
 
-	public RollerGripperSystem(int gripperMotor) {
-		mGripperMotor = new TalonSRX(gripperMotor);
-	}
+    public RollerGripperSystem(int gripperMotor) {
+        mGripperMotor = new TalonSRX(gripperMotor);
+    }
 
-	public void capture() {
-		rotate(RobotMap.CAPTURE_SPEED);
-	}
+    public void capture() {
+        rotate(RobotMap.CAPTURE_SPEED);
+    }
 
-	public void release() {
-		rotate(RobotMap.RELEASE_SPEED);
-	}
+    public void release() {
+        rotate(RobotMap.RELEASE_SPEED);
+    }
 
-	public void stop() {
-		rotate(0);
-	}
+    public void stop() {
+        rotate(0);
+    }
 
-	@Override
-	public void rotate(double speed) {
-		mGripperMotor.set(ControlMode.PercentOutput, speed);
-	}
+    @Override
+    public void rotate(double speed) {
+        mGripperMotor.set(ControlMode.PercentOutput, speed);
+    }
 }

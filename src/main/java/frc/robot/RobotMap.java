@@ -12,8 +12,8 @@ public class RobotMap {
     public static final int FRONT_LEFT_UP_SWITCH = 0;
     public static final int BACK_UP_SWITCH = 6;
 
-    public static final int FRONT_SENSOR = 7;
-    public static final int REAR_SENSOR = 8;
+    public static final int FRONT_SENSOR = 8;
+    public static final int REAR_SENSOR = 9;
 
     public static final int FRONT_RIGHT_MOTOR = 2;
     public static final int FRONT_LEFT_MOTOR = 3;
