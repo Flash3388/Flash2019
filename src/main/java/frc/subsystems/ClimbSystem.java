@@ -33,11 +33,11 @@ public class ClimbSystem extends Subsystem {
     }
     
     public boolean isFrontClosed() {
-        return closeRight.get() && closeLeft.get();
+        return !closeRight.get() && !closeLeft.get();
     }
 
     public boolean isBackClosed() {
-        return !closeBack.get();
+        return closeBack.get();
     }
 
     public void switchBack() {

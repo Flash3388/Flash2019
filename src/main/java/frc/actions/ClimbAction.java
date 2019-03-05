@@ -26,11 +26,12 @@ public class ClimbAction extends Action {
     protected void execute() {
         double speed = Robot.xbox.LeftStick.getY() * 0.8;
 
-        if(speed>0.16)
+        if (speed < -0.16)
             Robot.climbSystem.drive(speed);
         else
             Robot.climbSystem.stop();
     }
+    
     @Override
     protected void end() {
         Robot.climbSystem.stop();

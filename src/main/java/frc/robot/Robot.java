@@ -4,20 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
-import edu.flash3388.flashlib.robot.Action;
-import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
-import edu.flash3388.flashlib.robot.Scheduler;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
+
 import frc.actions.CloseBack;
 import frc.actions.CloseFront;
 import frc.subsystems.DriveSystem;
@@ -26,22 +21,17 @@ import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
-import frc.actions.CaptureAction;
 import frc.actions.ClimbAction;
-import frc.actions.ClimbDriveAction;
-import frc.actions.DrivePIDAction;
 import frc.actions.EdwardAction;
+import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
-import frc.actions.ReleaseAction;
-import frc.actions.SimpleManualLiftAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
 
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
-import frc.tables.TargetSelectListener;
 import frc.tables.TargetSelectTable;
 
 public class Robot extends IterativeFRCRobot implements TargetDataListener {
@@ -64,12 +54,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private TargetSelectTable mTargetSelectTable;
 	private TargetDataTable mTargetDataTable;
 
-	private DigitalInput dio0;
-	private DigitalInput dio6;
-	private DigitalInput dio1;
-	private DigitalInput dio4;
-	private DigitalInput dio5;
-
 	@Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
@@ -89,11 +73,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		setupSystems();
 		setupTables();
 		setupButtons();
-
-		dio1 = new DigitalInput(1);
-		dio4 = new DigitalInput(4);
-
-		dio6 = new DigitalInput(6);
 	}
 
 	@Override
@@ -158,6 +137,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
 
 		rollerGripperSystem = new RollerGripperSystem(RobotMap.ROLLER_GRIPPER_MOTOR);
+		rollerGripperSystem.setDefaultAction(new ManualGripperAction());
 
 		liftSystem = new LiftSystem(RobotMap.LEFT_LIFT_MOTOR, RobotMap.RIGHT_LIFT_MOTOR, RobotMap.DOWN_SWITCH, RobotMap.UP_SWITCH);
 		liftSystem.setDefaultAction(new ManualLiftAction());
@@ -166,19 +146,11 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
 		xbox.Start.whenPressed(new ClimbAction());
-		xbox.Back.whenPressed(new InstantAction(){
-
-			@Override
-			protected void execute() {
-				climbSystem.closeBack();
-				climbSystem.closeFront();
-			}
-		});
 
 		xbox.DPad.getDown().whenPressed(new CloseFront());
 		xbox.DPad.getUp().whenPressed(new CloseBack());
 
-		xbox.DPad.Right.whenPressed(new InstantAction() {
+		xbox.Back.whenPressed(new InstantAction() {
             @Override
             protected void execute() {
 				driveSystem.cancelCurrentAction();
