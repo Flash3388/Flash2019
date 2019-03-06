@@ -66,7 +66,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 
 		mCompressor = new Compressor(0);
-		mCompressor.stop();
+		mCompressor.start();
 		
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
@@ -170,21 +170,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 				rollerGripperSystem.cancelCurrentAction();
 				hatchSystem.cancelCurrentAction();
 				liftSystem.cancelCurrentAction();
-            }
-        });
-
-		righJoystick.getButton(1).whenPressed(new InstantAction() {
-            boolean isOn = false;
-
-		    @Override
-            protected void execute() {
-                if (isOn) {
-                    mCompressor.stop();
-                } else {
-                    mCompressor.start();
-                }
-
-                isOn = !isOn;
             }
         });
 	}
