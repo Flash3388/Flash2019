@@ -11,6 +11,9 @@ public class RobotMap {
     public static final int FRONT_RIGHT_UP_SWITCH = 5;
     public static final int FRONT_LEFT_UP_SWITCH = 0;
     public static final int BACK_UP_SWITCH = 6;
+    public static final int CLIMB_SWITCH = 8;
+    public static final int DRIVE_SWITCH = 9;
+    public static final double CLIMB_DRIVE_SPEED = 0.3;
 
     public static final int FRONT_RIGHT_MOTOR = 2;
     public static final int FRONT_LEFT_MOTOR = 3;

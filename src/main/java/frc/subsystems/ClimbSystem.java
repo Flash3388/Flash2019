@@ -17,19 +17,32 @@ public class ClimbSystem extends Subsystem {
     private final DigitalInput closeLeft;
     private final DigitalInput closeBack;
 
+    private final DigitalInput climbSwitch;
+    private final DigitalInput driveSwitch;
+
     public ClimbSystem(int frontRightForward, int frontRightBackward, int frontLeftForward, int frontLeftBackward,
             int backForward, int backBackward, int backMotor, int closeRightSensor, int closeLeftSensor,
-            int closeBackSensor) {
+            int closeBackSensor, int climbSensor, int driveSensor) {
         mFrontLeftPiston = new Piston(0, frontLeftForward, frontLeftBackward);
         mFrontRighPiston = new Piston(0, frontRightForward, frontRightBackward);
         mBackPiston = new Piston(0, backForward, backBackward);
 
         mBackMotor = new TalonSRX(backMotor);
-        mBackMotor.setInverted(true);
 
         closeRight = new DigitalInput(closeRightSensor);
         closeLeft = new DigitalInput(closeLeftSensor);
         closeBack = new DigitalInput(closeBackSensor);
+
+        climbSwitch = new DigitalInput(climbSensor);
+        driveSwitch = new DigitalInput(driveSensor);
+    }
+
+    public boolean isDrove() {
+        return !driveSwitch.get();
+    }
+
+    public boolean isClimbed() {
+        return !climbSwitch.get();
     }
     
     public boolean isFrontClosed() {

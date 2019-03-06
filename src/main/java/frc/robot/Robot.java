@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.actions.CloseBack;
 import frc.actions.CloseFront;
+import frc.actions.ComplexActions;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
@@ -25,6 +26,7 @@ import frc.actions.ClimbAction;
 import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
+import frc.actions.OnlyCloseBackAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
@@ -132,7 +134,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		climbSystem = new ClimbSystem(RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
 				RobotMap.FRONT_LEFT_CHANNEL_FORWARD, RobotMap.FRONT_LEFT_CHANNEL_BACKWARD,
 				RobotMap.BACK_CHANNEL_FORWARD, RobotMap.BACK_CHANNEL_BACKWARD, RobotMap.BACK_MOTOR,
-				RobotMap.FRONT_RIGHT_UP_SWITCH, RobotMap.FRONT_LEFT_UP_SWITCH, RobotMap.BACK_UP_SWITCH);
+				RobotMap.FRONT_RIGHT_UP_SWITCH, RobotMap.FRONT_LEFT_UP_SWITCH, RobotMap.BACK_UP_SWITCH,
+				RobotMap.CLIMB_SWITCH, RobotMap.DRIVE_SWITCH);
 
 		hatchSystem = new HatchSystem(RobotMap.HATCH_GRIPPER_CHANNEL_FORWARD, RobotMap.HATCH_GRIPPER_CHANNEL_BACKWARD);
 
@@ -149,6 +152,15 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 		xbox.DPad.getDown().whenPressed(new CloseFront());
 		xbox.DPad.getUp().whenPressed(new CloseBack());
+		xbox.DPad.getLeft().whenPressed(ComplexActions.AutonomousClimbAction());
+		xbox.DPad.getRight().whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				Robot.climbSystem.closeBack();
+				Robot.climbSystem.closeFront();
+			}
+		});
 
 		xbox.Back.whenPressed(new InstantAction() {
             @Override
