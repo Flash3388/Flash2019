@@ -148,7 +148,13 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
-		xbox.Start.whenPressed(new ClimbAction());
+		xbox.Start.whenPressed(new InstantAction() {
+            @Override
+            protected void execute() {
+                climbSystem.openBack();
+                climbSystem.openFront();
+            }
+        });
 
 		xbox.DPad.getDown().whenPressed(new CloseFront());
 		xbox.DPad.getUp().whenPressed(new CloseBack());
