@@ -22,7 +22,7 @@ public class RobotMap {
 
     public static final int HATCH_GRIPPER_CHANNEL_FORWARD = 3;
     public static final int HATCH_GRIPPER_CHANNEL_BACKWARD = 4;
-    public static final double CAPTURE_SPEED = -0.4;
+    public static final double CAPTURE_SPEED = -0.35;
     public static final double RELEASE_SPEED = 0.8;
 
     public static final int ROLLER_GRIPPER_MOTOR = 7;

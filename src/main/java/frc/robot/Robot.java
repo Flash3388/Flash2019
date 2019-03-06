@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
+import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
@@ -56,6 +57,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private TargetSelectTable mTargetSelectTable;
 	private TargetDataTable mTargetDataTable;
 
+	private List<Action> mActionsToStop = new ArrayList<>();
+
 	@Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
@@ -93,6 +96,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopPeriodic() {
+	    //climbSystem.drive(xbox.getLeftStick().AxisY.get());
 	}
 
 	@Override
@@ -158,7 +162,11 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 		xbox.DPad.getDown().whenPressed(new CloseFront());
 		xbox.DPad.getUp().whenPressed(new CloseBack());
-		xbox.DPad.getLeft().whenPressed(ComplexActions.AutonomousClimbAction());
+
+		Action autonomousClimb = ComplexActions.AutonomousClimbAction();
+		mActionsToStop.add(autonomousClimb);
+		xbox.DPad.getLeft().whenPressed(autonomousClimb);
+
 		xbox.DPad.getRight().whenPressed(new InstantAction(){
 		
 			@Override
@@ -176,6 +184,12 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 				rollerGripperSystem.cancelCurrentAction();
 				hatchSystem.cancelCurrentAction();
 				liftSystem.cancelCurrentAction();
+
+				for (Action action : mActionsToStop) {
+				    if (action.isRunning() && !action.isCanceled()) {
+				        action.cancel();
+                    }
+                }
             }
         });
 	}

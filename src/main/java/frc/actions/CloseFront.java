@@ -19,7 +19,7 @@ public class CloseFront extends Action {
     protected void execute() {
         if (Robot.climbSystem.isFrontClosed()) {
             double speed = Robot.xbox.LeftStick.getY() * 0.8;
-            System.out.println("here");
+            System.out.println("here: " + speed);
             if (speed > 0.16)
                 Robot.climbSystem.drive(speed);
             else
