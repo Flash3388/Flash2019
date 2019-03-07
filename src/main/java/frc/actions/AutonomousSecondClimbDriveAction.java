@@ -11,13 +11,7 @@ public class AutonomousSecondClimbDriveAction extends Action {
     }
 
     @Override
-    protected void initialize() {
-        System.out.println("AutonomousSecondClimbDriveAction");
-    }
-
-    @Override
     protected void end() {
-        System.out.println("Done AutonomousSecondClimbDriveAction");
         Robot.driveSystem.stop();
         Robot.climbSystem.stop();
     }

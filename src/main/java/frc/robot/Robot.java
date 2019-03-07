@@ -23,11 +23,9 @@ import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
-import frc.actions.ClimbAction;
 import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
-import frc.actions.OnlyCloseBackAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
@@ -38,8 +36,6 @@ import frc.tables.TargetDataTable;
 import frc.tables.TargetSelectTable;
 
 public class Robot extends IterativeFRCRobot implements TargetDataListener {
-	private Compressor mCompressor;
-
 	public static DriveSystem driveSystem;
 	public static ClimbSystem climbSystem;
 	public static HatchSystem hatchSystem;
@@ -67,9 +63,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
-
-		mCompressor = new Compressor(0);
-		mCompressor.start();
 		
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
@@ -152,13 +145,10 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
-		xbox.Start.whenPressed(new InstantAction() {
-            @Override
-            protected void execute() {
-                climbSystem.openBack();
-                climbSystem.openFront();
-            }
-        });
+
+		Action climbAction = ComplexActions.ClimbDriveAction();
+		mActionsToStop.add(climbAction);
+		xbox.Start.whenPressed(climbAction);
 
 		xbox.DPad.getDown().whenPressed(new CloseFront());
 		xbox.DPad.getUp().whenPressed(new CloseBack());

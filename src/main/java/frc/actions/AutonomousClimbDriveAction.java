@@ -22,13 +22,11 @@ public class AutonomousClimbDriveAction extends Action {
 
     @Override
     protected boolean isFinished() {
-        System.out.println("isClimbed:" + Robot.climbSystem.isClimbed());
         return Robot.climbSystem.isClimbed();
     }
 
     @Override
     protected void end() {
-        System.out.println("Done AutonomousClimbDriveAction");
         Robot.climbSystem.stop();
     }
 }
