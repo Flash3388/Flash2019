@@ -2,12 +2,12 @@ package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
+import frc.robot.Robot;
 
 public class ComplexActions {
 
     public static Action AutonomousClimbAction() {
         return new ActionGroup().addSequential(ClimbAction())
-                .addWaitAction(4)
                 .addSequential(new AutonomousClimbDriveAction())
                 .addSequential(new OnlyCloseFrontAction())
                 .addWaitAction(5)
@@ -17,13 +17,23 @@ public class ComplexActions {
     
     public static Action ClimbAction() {
         return new ActionGroup().addSequential(new OpenBackPistonAction())
-                .addWaitAction(0.5)
-                .addSequential(new OpenFrontAction());
+                .addSequential(new OpenFrontAction())
+                .addWaitAction(2)
+                .addSequential(new Action() {
+                    @Override
+                    protected void execute() {
+                        Robot.climbSystem.drive(0.1);
+                    }
+
+                    @Override
+                    protected void end() {
+                        Robot.climbSystem.stop();
+                    }
+                },2);
     }
 
     public static Action ClimbDriveAction() {
         return new ActionGroup().addSequential(ClimbAction())
-                .addWaitAction(4)
                 .addSequential(new ManualClimbDriveAction());
     }
 }
