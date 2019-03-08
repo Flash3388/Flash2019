@@ -66,7 +66,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
 
 		mCompressor = new Compressor();
-		mCompressor.stop();
+		//mCompressor.stop();
 
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
