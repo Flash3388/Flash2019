@@ -17,7 +17,12 @@ public class AutonomousClimbDriveAction extends Action {
 
     @Override
     protected void execute() {
-        Robot.climbSystem.drive(RobotMap.CLIMB_DRIVE_SPEED);
+        double manualValue = Math.abs(Robot.xbox.LeftStick.getY());
+
+        Robot.climbSystem.drive(
+                manualValue > RobotMap.CLIMB_DRIVE_SPEED ?
+                manualValue :
+                RobotMap.CLIMB_DRIVE_SPEED);
     }
 
     @Override

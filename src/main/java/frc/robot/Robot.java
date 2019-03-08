@@ -14,9 +14,8 @@ import edu.flash3388.flashlib.robot.hid.XboxController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 
-import frc.actions.CloseBack;
-import frc.actions.CloseFront;
 import frc.actions.ComplexActions;
+import frc.actions.LiftAction;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
@@ -53,6 +52,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private TargetSelectTable mTargetSelectTable;
 	private TargetDataTable mTargetDataTable;
 
+	private Compressor mCompressor;
+
 	private List<Action> mActionsToStop = new ArrayList<>();
 
 	@Override
@@ -63,7 +64,10 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
-		
+
+		mCompressor = new Compressor();
+		mCompressor.stop();
+
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
 		lefJoystick = new Joystick(2, 5);
@@ -104,7 +108,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	public void onTargetData(TargetData targetData) {
-		new SmartDriveToTarget(0.5, 1000, targetData.getDistance(), targetData.getAngle()).start();;
+		new SmartDriveToTarget(0.5, 1000, targetData.getDistance(), targetData.getAngle()).start();
 	}
 
 	private void setupTables() {
@@ -146,14 +150,15 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
 
-		Action climbAction = ComplexActions.ClimbDriveAction();
+		Action climbAction = ComplexActions.climbDriveAction();
 		mActionsToStop.add(climbAction);
 		xbox.Start.whenPressed(climbAction);
 
-		xbox.DPad.getDown().whenPressed(new CloseFront());
-		xbox.DPad.getUp().whenPressed(new CloseBack());
+		xbox.DPad.getUp().whenPressed(new LiftAction(RobotMap.CARGO_SHIP_BALL));
+		xbox.DPad.getUp().whenMultiPressed(new LiftAction(RobotMap.ROCKET_BALL_ONE), 2);
+		xbox.DPad.getDown().whenPressed(new LiftAction(RobotMap.ROCKET_HATCH_ONE));
 
-		Action autonomousClimb = ComplexActions.AutonomousClimbAction();
+		Action autonomousClimb = ComplexActions.autonomousClimbAction();
 		mActionsToStop.add(autonomousClimb);
 		xbox.DPad.getLeft().whenPressed(autonomousClimb);
 

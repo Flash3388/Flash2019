@@ -6,8 +6,8 @@ import frc.robot.Robot;
 
 public class ComplexActions {
 
-    public static Action AutonomousClimbAction() {
-        return new ActionGroup().addSequential(ClimbAction())
+    public static Action autonomousClimbAction() {
+        return new ActionGroup().addSequential(climbAction())
                 .addSequential(new AutonomousClimbDriveAction())
                 .addSequential(new OnlyCloseFrontAction())
                 .addWaitAction(5)
@@ -15,7 +15,7 @@ public class ComplexActions {
                 .addSequential(new OnlyCloseBackAction()); 
     }
     
-    public static Action ClimbAction() {
+    public static Action climbAction() {
         return new ActionGroup().addSequential(new OpenBackPistonAction())
                 .addSequential(new OpenFrontAction())
                 .addWaitAction(2)
@@ -32,8 +32,8 @@ public class ComplexActions {
                 },2);
     }
 
-    public static Action ClimbDriveAction() {
-        return new ActionGroup().addSequential(ClimbAction())
+    public static Action climbDriveAction() {
+        return new ActionGroup().addSequential(climbAction())
                 .addSequential(new ManualClimbDriveAction());
     }
 }

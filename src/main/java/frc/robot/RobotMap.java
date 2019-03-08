@@ -22,10 +22,10 @@ public class RobotMap {
 
     public static final int HATCH_GRIPPER_CHANNEL_FORWARD = 3;
     public static final int HATCH_GRIPPER_CHANNEL_BACKWARD = 4;
-    public static final double CAPTURE_SPEED = -0.35;
-    public static final double RELEASE_SPEED = 0.8;
 
     public static final int ROLLER_GRIPPER_MOTOR = 7;
+    public static final double CAPTURE_SPEED = -0.35;
+    public static final double RELEASE_SPEED = 0.6;
 
     public static final int RIGHT_LIFT_MOTOR = 9;
     public static final int LEFT_LIFT_MOTOR = 8;
@@ -34,6 +34,10 @@ public class RobotMap {
     public static final double LIFT_SPEED = 0.812345;
     public static final double FALL_SPEED = -0.45;
     public static final double STALL_SPEED = 0.075;
+
+    public static final double CARGO_SHIP_BALL = 1.9;
+    public static final double ROCKET_BALL_ONE = 1.0;
+    public static final double ROCKET_HATCH_ONE = 1.8;
 
     public static final double DRIVE_LIMIT = 1.0;
     public static final double ROTATE_LIMIT = 1.0;
