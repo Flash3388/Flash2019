@@ -10,12 +10,11 @@ import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-
+import frc.actions.CancelAllCurrentRunningActionsAction;
 import frc.actions.ComplexActions;
-import frc.actions.LiftAction;
+import frc.actions.LiftBallMaxAction;
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
@@ -24,11 +23,11 @@ import frc.subsystems.ClimbSystem;
 
 import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
-import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
-
+import frc.actions.TimedDriveAction;
+import frc.actions.TimedLiftAction;
 import frc.tables.TargetData;
 import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
@@ -52,10 +51,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	private TargetSelectTable mTargetSelectTable;
 	private TargetDataTable mTargetDataTable;
 
-	private Compressor mCompressor;
-
-	private List<Action> mActionsToStop = new ArrayList<>();
-
 	@Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
@@ -64,9 +59,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
-
-		mCompressor = new Compressor();
-		//mCompressor.stop();
 
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
@@ -108,7 +100,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	public void onTargetData(TargetData targetData) {
-		new SmartDriveToTarget(0.5, 1000, targetData.getDistance(), targetData.getAngle()).start();
+		new SmartDriveToTarget(3, targetData.getDistance(), targetData.getAngle()).start();
 	}
 
 	private void setupTables() {
@@ -144,22 +136,21 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		rollerGripperSystem.setDefaultAction(new ManualGripperAction());
 
 		liftSystem = new LiftSystem(RobotMap.LEFT_LIFT_MOTOR, RobotMap.RIGHT_LIFT_MOTOR, RobotMap.DOWN_SWITCH, RobotMap.UP_SWITCH);
-		liftSystem.setDefaultAction(new ManualLiftAction());
+		// liftSystem.setDefaultAction(new ManualLiftAction());
 	}
 	
 	private void setupButtons() {
 		xbox.Y.whenPressed(new EdwardAction());
 
 		Action climbAction = ComplexActions.climbDriveAction();
-		mActionsToStop.add(climbAction);
 		xbox.Start.whenPressed(climbAction);
 
-		xbox.DPad.getUp().whenPressed(new LiftAction(RobotMap.CARGO_SHIP_BALL));
-		xbox.DPad.getUp().whenMultiPressed(new LiftAction(RobotMap.ROCKET_BALL_ONE), 2);
-		xbox.DPad.getDown().whenPressed(new LiftAction(RobotMap.ROCKET_HATCH_ONE));
+		xbox.DPad.getUp().whenPressed(new TimedLiftAction(RobotMap.CARGO_SHIP_BALL));
+		xbox.DPad.getUp().whenMultiPressed(new TimedLiftAction(RobotMap.ROCKET_BALL_ONE), 2);
+		xbox.DPad.getUp().whenMultiPressed(new LiftBallMaxAction(), 3);
+		xbox.DPad.getDown().whenPressed(new TimedLiftAction(RobotMap.ROCKET_HATCH_ONE));
 
 		Action autonomousClimb = ComplexActions.autonomousClimbAction();
-		mActionsToStop.add(autonomousClimb);
 		xbox.DPad.getLeft().whenPressed(autonomousClimb);
 
 		xbox.DPad.getRight().whenPressed(new InstantAction(){
@@ -171,21 +162,18 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 			}
 		});
 
-		xbox.Back.whenPressed(new InstantAction() {
-            @Override
-            protected void execute() {
-				driveSystem.cancelCurrentAction();
-				climbSystem.cancelCurrentAction();
-				rollerGripperSystem.cancelCurrentAction();
-				hatchSystem.cancelCurrentAction();
-				liftSystem.cancelCurrentAction();
+		xbox.Back.whenPressed(new CancelAllCurrentRunningActionsAction(climbAction,autonomousClimb));
+		
+		// //tmp
 
-				for (Action action : mActionsToStop) {
-				    if (action.isRunning() && !action.isCanceled()) {
-				        action.cancel();
-                    }
-                }
-            }
-        });
+		xbox.RB.whenPressed(new InstantAction(){
+		
+			@Override
+			protected void execute() {
+				driveSystem.resetGyro();
+			}
+		});
+
+		xbox.LB.whenPressed(new TimedDriveAction(0.2, 1));
 	}
 }

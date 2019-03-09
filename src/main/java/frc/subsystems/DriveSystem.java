@@ -90,7 +90,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
             }
         };
 
-        distancePID = new PIDController(0.1,0.0,0.0,0.0,distanceSetPoint, distancSource);
+        distancePID = new PIDController(0.04,0.0,0.0,0.0,distanceSetPoint, distancSource);
         distancePID.setOutputLimit(-RobotMap.DRIVE_LIMIT, RobotMap.DRIVE_LIMIT);
         rotatePID = new PIDController(0.04,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
         rotatePID.setOutputLimit(-RobotMap.ROTATE_LIMIT, RobotMap.ROTATE_LIMIT);

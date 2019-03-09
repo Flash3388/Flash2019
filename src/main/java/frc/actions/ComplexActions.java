@@ -2,7 +2,6 @@ package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
-import frc.robot.Robot;
 
 public class ComplexActions {
 
@@ -10,7 +9,7 @@ public class ComplexActions {
         return new ActionGroup().addSequential(climbAction())
                 .addSequential(new AutonomousClimbDriveAction())
                 .addSequential(new OnlyCloseFrontAction())
-                .addWaitAction(5)
+                .addSequential(new WaitAction(5))
                 .addSequential(new AutonomousSecondClimbDriveAction())
                 .addSequential(new OnlyCloseBackAction()); 
     }
@@ -18,22 +17,18 @@ public class ComplexActions {
     public static Action climbAction() {
         return new ActionGroup().addSequential(new OpenBackPistonAction())
                 .addSequential(new OpenFrontAction())
-                .addWaitAction(2)
-                .addSequential(new Action() {
-                    @Override
-                    protected void execute() {
-                        Robot.climbSystem.drive(0.1);
-                    }
-
-                    @Override
-                    protected void end() {
-                        Robot.climbSystem.stop();
-                    }
-                },2);
+                .addSequential(new WaitAction(2))
+                .addSequential(new StallClimbDriveTimedAction(2));
     }
 
     public static Action climbDriveAction() {
         return new ActionGroup().addSequential(climbAction())
                 .addSequential(new ManualClimbDriveAction());
+    }
+
+    public static Action autonomousDriveToTarget(double distance, double angle) {
+        return new ActionGroup().addSequential(new SmartDriveToTarget(3, distance, angle))
+                .addSequential(new TimedDriveAction(0.2, 0.5))
+                .addSequential(new EdwardAction());
     }
 }

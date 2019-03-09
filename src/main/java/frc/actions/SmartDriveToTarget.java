@@ -12,26 +12,23 @@ import frc.subsystems.DriveSystem;
 public class SmartDriveToTarget extends Action {
     private static final double MAX_DISTANCE = 300.0;
 
-    private double mThresholdStartTime = 0.0;
     private double mRotateMargin;
 
-    private int mRotateTimeInThreshold;
-
-    public SmartDriveToTarget(double rotateMargin, int rotateTimeInThreshold, double distanceToTarget,
+    public SmartDriveToTarget(double rotateMargin, double distanceToTarget,
             double targetAngle) {
         requires(Robot.driveSystem);
 
         mRotateMargin = rotateMargin;
-        mRotateTimeInThreshold = rotateTimeInThreshold;
 
         Robot.driveSystem.distanceSetPoint.set(distanceToTarget);
         Robot.driveSystem.rotationSetPoint.set(
-                (double)DriveSystem.findClosest(RobotMap.ANGLE_SET,(int)Robot.driveSystem.getAngle()+(int)targetAngle));
+                (double) DriveSystem.findClosest(RobotMap.ANGLE_SET,
+                        (int) Robot.driveSystem.getAngle() + (int) targetAngle));
+        System.out.println(targetAngle);
     }
 
     @Override
     protected void initialize() {
-        System.out.println(Robot.driveSystem.distanceSetPoint.get());
         if (Robot.driveSystem.distanceSetPoint.get() == -1 || Robot.driveSystem.distanceSetPoint.get() > MAX_DISTANCE) {
             System.out.println("Fucked");
             cancel();
@@ -44,6 +41,9 @@ public class SmartDriveToTarget extends Action {
 
         Robot.driveSystem.rotatePID.setEnabled(true);
         Robot.driveSystem.rotatePID.reset();
+
+        System.out.println(Robot.driveSystem.rotatePID.getSetPoint());
+        System.out.println(Robot.driveSystem.rotatePID.getPIDSource().pidGet());
     }
 
     @Override
@@ -65,21 +65,12 @@ public class SmartDriveToTarget extends Action {
         
         if (ratio < RobotMap.TURNING_RATIO)
             ratio -= RobotMap.TURNING_RATIO;
-
-        if (!Robot.driveSystem.rotatePID.isEnabled() || (inRotationThreshold())) {
-            if (mThresholdStartTime < 1)
-                mThresholdStartTime = FlashUtil.millisInt();
-        } else {
-            if (mThresholdStartTime >= 1)
-                mThresholdStartTime = 0;
-        }
-        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * 0.6);
+        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * RobotMap.TURNING_MODIFIER);
     }
 
     @Override
     protected boolean isFinished() {
-        return inRotationThreshold() && mThresholdStartTime > 0
-                && FlashUtil.millisInt() - mThresholdStartTime >= mRotateTimeInThreshold;
+        return inRotationThreshold();
     }
 
     private boolean inRotationThreshold() {

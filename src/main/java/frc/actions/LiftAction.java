@@ -3,7 +3,7 @@ package frc.actions;
 import edu.flash3388.flashlib.robot.Action;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
-
+@Deprecated
 public class LiftAction extends Action {
 
     private  double mTimeout;

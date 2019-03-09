@@ -42,8 +42,9 @@ public class RobotMap {
     public static final double DRIVE_LIMIT = 1.0;
     public static final double ROTATE_LIMIT = 1.0;
 
-    public static final int[] ANGLE_SET = { -125, -90, -45, 0, 45, 90, 125 };
-    public static final double TURNING_RATIO = 0.56;//0.56
+    public static final int[] ANGLE_SET = {-180, -151, -90, -61, 0, 61, 90, 151, 180};
+    public static final double TURNING_RATIO = 0;//0.56
+    public static final double TURNING_MODIFIER = 0.75;
     public static final double MIN_JOYSTICK_VALUE = 0.12;
 
     public static final double CAMERA_FOV = 65.0;
