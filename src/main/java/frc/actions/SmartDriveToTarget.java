@@ -25,6 +25,7 @@ public class SmartDriveToTarget extends Action {
                 (double) DriveSystem.findClosest(RobotMap.ANGLE_SET,
                         (int) Robot.driveSystem.getAngle() + (int) targetAngle));
         System.out.println(targetAngle);
+        Robot.driveSystem.setDistancePIDSource(targetAngle);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class SmartDriveToTarget extends Action {
     protected void execute() {
         double distanceResult = -Robot.driveSystem.distancePID.calculate();
         double rotationResult = Robot.driveSystem.rotatePID.calculate();
-        double distance = Robot.driveSystem.getDistance();
+        double distance = Robot.driveSystem.distancePID.getPIDSource().pidGet();
         double ratio;
 
         if(distance>Robot.driveSystem.distancePID.getSetPoint().get())

@@ -18,10 +18,10 @@ import frc.robot.NetworkPIDTunner;
 import frc.robot.RobotMap;
 
 public class DriveSystem extends Subsystem implements TankDriveSystem {
+    private final static double DISTANCE_MULTIPLY_VALUE = RobotMap.REVERSE_PPR*RobotMap.WHEEL_DIAMETER*Math.PI;
+
     private static final String DISTANCE_NAME = "distanceSetPoint";
     private static final String ROTATION_NAME = "rotationSetPoint";
-
-    private final NetworkPIDTunner mRotationTunner;
 
     public PIDController distancePID;
     public PIDController rotatePID;
@@ -51,7 +51,9 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mRearRight.configFactoryDefault();
         mRearRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        mRotationTunner = new NetworkPIDTunner();
+        mFrontLeft.configFactoryDefault();
+        mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+
         pidsHandler();
     }
 
@@ -75,29 +77,49 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     }
 
     private void pidsHandler() {
-        PIDSource distancSource = new PIDSource(){
-        
+        PIDSource distancSource = new PIDSource() {
+
             @Override
             public double pidGet() {
-                return getDistance();
+                return getRightDistance();
             }
         };
-        PIDSource rotationSource = new PIDSource(){
-        
+        PIDSource rotationSource = new PIDSource() {
+
             @Override
             public double pidGet() {
                 return getAngle();
             }
         };
 
-        distancePID = new PIDController(0.04,0.0,0.0,0.0,distanceSetPoint, distancSource);
+        distancePID = new PIDController(0.04, 0.0, 0.0, 0.0, distanceSetPoint, distancSource);
         distancePID.setOutputLimit(-RobotMap.DRIVE_LIMIT, RobotMap.DRIVE_LIMIT);
-        rotatePID = new PIDController(0.04,0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
+        rotatePID = new PIDController(0.04, 0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
         rotatePID.setOutputLimit(-RobotMap.ROTATE_LIMIT, RobotMap.ROTATE_LIMIT);
     }
 
-    public double getDistance() {
-        return mRearRight.getSelectedSensorPosition() * RobotMap.REVERSE_PPR * RobotMap.WHEEL_DIAMETER * Math.PI;
+    public void setDistancePIDSource(double angle) {
+        distancePID.setPIDSource(angle>0 ? new PIDSource(){
+        
+            @Override
+            public double pidGet() {
+                return getRightDistance();
+            }
+        } : new PIDSource(){
+        
+            @Override
+            public double pidGet() {
+                return getLeftDistance();
+            }
+        });
+    } 
+    
+    public double getLeftDistance() {
+        return mFrontLeft.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
+    }
+
+    public double getRightDistance() {
+        return mRearRight.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
     }
     
     public double getAngle() {
@@ -106,6 +128,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     public void resetDistance() {
         mRearRight.setSelectedSensorPosition(0);
+        mFrontLeft.setSelectedSensorPosition(0);
     }
 
     public void resetGyro() {
