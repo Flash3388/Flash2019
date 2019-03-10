@@ -26,6 +26,7 @@ public class RotationPIDAction extends Action {
     protected void initialize() {
         Robot.driveSystem.rotatePID.setEnabled(true);
         Robot.driveSystem.rotatePID.reset();
+        Robot.driveSystem.resetGyro();
     }
 
     @Override
@@ -44,7 +45,7 @@ public class RotationPIDAction extends Action {
             if (mThresholdStartTime >= 1)
                 mThresholdStartTime = 0;
         }
-        Robot.driveSystem.tankDrive(pidResult * modifier, -pidResult * modifier);
+        Robot.driveSystem.tankDrive(0.2*Math.signum(Robot.driveSystem.rotatePID.getSetPoint().get()) , -0.2 *Math.signum(Robot.driveSystem.rotatePID.getSetPoint().get()));
 
     }
 

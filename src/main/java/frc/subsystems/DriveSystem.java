@@ -114,12 +114,10 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     } 
     
     public double getLeftDistance() {
-        System.out.println("Left: ");
         return mFrontLeft.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
     }
 
     public double getRightDistance() {
-        System.out.println("Right: ");
         return mRearRight.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
     }
     

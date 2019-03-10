@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
 import edu.flash3388.flashlib.robot.Action;
+import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
@@ -25,6 +26,7 @@ import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
+import frc.actions.RotationPIDAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
 import frc.actions.TimedDriveAction;
@@ -100,7 +102,9 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	public void onTargetData(TargetData targetData) {
-		ComplexActions.autonomousDriveToTarget(targetData.getDistance(), targetData.getAngle()).start();
+		new ActionGroup()
+				.addSequential(new RotationPIDAction(4, 0, targetData.getAngle()))
+				.addSequential(new TimedDriveAction(0.35, 2)).start();
 	}
 
 	private void setupTables() {
@@ -111,9 +115,10 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		for (int i = 0; i < TargetSelectTable.NUM_OF_POSSIBLE_TARGETS; i++) {
 			mTargetSelectActionList.add(new TargetSelectAction(mTargetSelectTable, i));
 		}
-		xbox.A.whenPressed(mTargetSelectActionList.get(0));
-		xbox.B.whenPressed(mTargetSelectActionList.get(1));
-		xbox.X.whenPressed(mTargetSelectActionList.get(2));
+		righJoystick.getButton(1).whenPressed(mTargetSelectActionList.get(0));
+		// xbox.A.whenPressed(mTargetSelectActionList.get(0));
+		// xbox.B.whenPressed(mTargetSelectActionList.get(1));
+		// xbox.X.whenPressed(mTargetSelectActionList.get(2));
 
 		mTargetDataTable.registerTargetDataListener(this);
 
@@ -165,16 +170,5 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 		xbox.Back.whenPressed(new CancelAllCurrentRunningActionsAction(climbAction,autonomousClimb));
 		
-		// //tmp
-
-		xbox.RB.whenPressed(new InstantAction(){
-		
-			@Override
-			protected void execute() {
-				driveSystem.resetGyro();
-			}
-		});
-
-		xbox.LB.whenPressed(new TimedDriveAction(0.2, 1));
 	}
 }

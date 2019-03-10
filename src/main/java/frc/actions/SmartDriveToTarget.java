@@ -14,6 +14,8 @@ public class SmartDriveToTarget extends Action {
     private double mRotateMargin;
     private boolean isRight = true;
 
+    private double mRatio;
+
     public SmartDriveToTarget(double rotateMargin, double distanceToTarget,
             double targetAngle) {
         requires(Robot.driveSystem);
@@ -21,9 +23,7 @@ public class SmartDriveToTarget extends Action {
         mRotateMargin = rotateMargin;
 
         Robot.driveSystem.distanceSetPoint.set(distanceToTarget);
-        Robot.driveSystem.rotationSetPoint.set(
-                (double) DriveSystem.findClosest(RobotMap.ANGLE_SET,
-                        (int) Robot.driveSystem.getAngle() + (int) targetAngle));
+        
         System.out.println(targetAngle);
         Robot.driveSystem.setDistancePIDSource(targetAngle);
         if (targetAngle < 0) {
@@ -34,11 +34,6 @@ public class SmartDriveToTarget extends Action {
 
     @Override
     protected void initialize() {
-        if (Robot.driveSystem.distanceSetPoint.get() == -1 || Robot.driveSystem.distanceSetPoint.get() > MAX_DISTANCE) {
-            System.out.println("Fucked");
-            cancel();
-        }
-
         Robot.driveSystem.resetDistance();
 
         Robot.driveSystem.distancePID.setEnabled(true);
@@ -61,26 +56,27 @@ public class SmartDriveToTarget extends Action {
         double distanceResult = -Robot.driveSystem.distancePID.calculate();
         double rotationResult = Robot.driveSystem.rotatePID.calculate();
         double distance = Robot.driveSystem.distancePID.getPIDSource().pidGet();
-        double ratio;
 
         if(distance>Robot.driveSystem.distancePID.getSetPoint().get())
-            ratio = 1;
+            mRatio = 1;
         else
-            ratio = distance / Robot.driveSystem.distancePID.getSetPoint().get();
+            mRatio = distance / Robot.driveSystem.distancePID.getSetPoint().get();
         
         if(isRight)
-            if (ratio < RobotMap.TURNING_RATIO_RIGHT)
-                ratio -= RobotMap.TURNING_RATIO_RIGHT;
+            if (mRatio < -RobotMap.TURNING_RATIO_RIGHT) {
+                mRatio = -RobotMap.TURNING_RATIO_RIGHT;
+            }
         else
-            if (ratio < RobotMap.TURNING_RATIO_LEFT)
-                ratio -= RobotMap.TURNING_RATIO_LEFT;
+            if (mRatio < RobotMap.TURNING_RATIO_LEFT)
+                mRatio -= RobotMap.TURNING_RATIO_LEFT;
 
-        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio)* RobotMap.DRIVING_MODIFIER, rotationResult * ratio * RobotMap.TURNING_MODIFIER);
+        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - mRatio)* RobotMap.DRIVING_MODIFIER, rotationResult * mRatio * RobotMap.TURNING_MODIFIER);
     }
 
     @Override
     protected boolean isFinished() {
-        return inRotationThreshold();
+        System.out.println(mRatio);
+        return mRatio >=0.61;
     }
 
     private boolean inRotationThreshold() {
