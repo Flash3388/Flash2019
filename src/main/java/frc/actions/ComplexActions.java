@@ -27,8 +27,7 @@ public class ComplexActions {
     }
 
     public static Action autonomousDriveToTarget(double distance, double angle) {
-        return new ActionGroup().addSequential(new SmartDriveToTarget(3, distance, angle))
-                .addSequential(new TimedDriveAction(0.2, 0.5))
+        return new ActionGroup().addSequential(new SmartDriveToTarget(4, distance, angle))
                 .addSequential(new EdwardAction());
     }
 }

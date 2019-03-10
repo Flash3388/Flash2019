@@ -14,7 +14,6 @@ import edu.flash3388.flashlib.util.beans.PropertyHandler;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
-import frc.robot.NetworkPIDTunner;
 import frc.robot.RobotMap;
 
 public class DriveSystem extends Subsystem implements TankDriveSystem {
@@ -115,10 +114,12 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     } 
     
     public double getLeftDistance() {
+        System.out.println("Left: ");
         return mFrontLeft.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
     }
 
     public double getRightDistance() {
+        System.out.println("Right: ");
         return mRearRight.getSelectedSensorPosition() * DISTANCE_MULTIPLY_VALUE;
     }
     

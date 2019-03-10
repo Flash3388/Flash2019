@@ -23,6 +23,7 @@ import frc.subsystems.ClimbSystem;
 
 import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
+import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
 import frc.actions.SmartDriveToTarget;
 import frc.actions.TargetSelectAction;
@@ -85,7 +86,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	protected void teleopPeriodic() {
-	    //climbSystem.drive(xbox.getLeftStick().AxisY.get());
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 
 	@Override
 	public void onTargetData(TargetData targetData) {
-		new SmartDriveToTarget(3, targetData.getDistance(), targetData.getAngle()).start();
+		ComplexActions.autonomousDriveToTarget(targetData.getDistance(), targetData.getAngle()).start();
 	}
 
 	private void setupTables() {
@@ -123,6 +123,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		driveSystem = new DriveSystem(RobotMap.FRONT_RIGHT_MOTOR, RobotMap.REAR_RIGHT_MOTOR, RobotMap.FRONT_LEFT_MOTOR,
 				RobotMap.REAR_LEFT_MOTOR);
 		driveSystem.setDefaultAction(new OperatorDriveAction());
+		driveSystem.resetDistance();
 
 		climbSystem = new ClimbSystem(RobotMap.FRONT_RIGHT_CHANNEL_FORWARD, RobotMap.FRONT_RIGHT_CHANNEL_BACKWARD,
 				RobotMap.FRONT_LEFT_CHANNEL_FORWARD, RobotMap.FRONT_LEFT_CHANNEL_BACKWARD,
@@ -136,7 +137,7 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		rollerGripperSystem.setDefaultAction(new ManualGripperAction());
 
 		liftSystem = new LiftSystem(RobotMap.LEFT_LIFT_MOTOR, RobotMap.RIGHT_LIFT_MOTOR, RobotMap.DOWN_SWITCH, RobotMap.UP_SWITCH);
-		// liftSystem.setDefaultAction(new ManualLiftAction());
+		liftSystem.setDefaultAction(new ManualLiftAction());
 	}
 	
 	private void setupButtons() {

@@ -2,7 +2,6 @@ package frc.actions;
 
 import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
-import edu.flash3388.flashlib.util.FlashUtil;
 
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -10,9 +9,10 @@ import frc.robot.RobotMap;
 import frc.subsystems.DriveSystem;
 
 public class SmartDriveToTarget extends Action {
-    private static final double MAX_DISTANCE = 300.0;
+    private static final double MAX_DISTANCE = 400.0;
 
     private double mRotateMargin;
+    private boolean isRight = true;
 
     public SmartDriveToTarget(double rotateMargin, double distanceToTarget,
             double targetAngle) {
@@ -26,6 +26,10 @@ public class SmartDriveToTarget extends Action {
                         (int) Robot.driveSystem.getAngle() + (int) targetAngle));
         System.out.println(targetAngle);
         Robot.driveSystem.setDistancePIDSource(targetAngle);
+        if (targetAngle < 0) {
+            isRight = false;
+            System.out.println("LEFT");
+        }
     }
 
     @Override
@@ -64,9 +68,14 @@ public class SmartDriveToTarget extends Action {
         else
             ratio = distance / Robot.driveSystem.distancePID.getSetPoint().get();
         
-        if (ratio < RobotMap.TURNING_RATIO)
-            ratio -= RobotMap.TURNING_RATIO;
-        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio), rotationResult * ratio * RobotMap.TURNING_MODIFIER);
+        if(isRight)
+            if (ratio < RobotMap.TURNING_RATIO_RIGHT)
+                ratio -= RobotMap.TURNING_RATIO_RIGHT;
+        else
+            if (ratio < RobotMap.TURNING_RATIO_LEFT)
+                ratio -= RobotMap.TURNING_RATIO_LEFT;
+
+        Robot.driveSystem.arcadeDrive(distanceResult * (1.0 - ratio)* RobotMap.DRIVING_MODIFIER, rotationResult * ratio * RobotMap.TURNING_MODIFIER);
     }
 
     @Override
