@@ -7,6 +7,8 @@ import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.actions.CancelAllCurrentRunningActionsAction;
@@ -22,6 +24,9 @@ import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
+import frc.time.Clock;
+import frc.time.FpgaClock;
+import frc.time.ntp.NtpServer;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveSystem;
@@ -37,7 +42,11 @@ public class Robot extends IterativeFRCRobot {
 
 	public static SuffleboardHandler pidHandler;
 
-	@Override
+	public static Clock clock;
+
+	private NtpServer ntpServer;
+
+    @Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
 	}
@@ -45,6 +54,15 @@ public class Robot extends IterativeFRCRobot {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+
+        clock = new FpgaClock();
+
+        NetworkTable ntpTable = NetworkTableInstance.getDefault().getTable("ntp");
+        ntpServer = new NtpServer(
+                ntpTable.getEntry("client"),
+                ntpTable.getEntry("serverRec"),
+                ntpTable.getEntry("serverSend"),
+                clock);
 
 		xbox = new XboxController(0);
 		righJoystick = new Joystick(1, 5);
