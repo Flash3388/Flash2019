@@ -18,10 +18,7 @@ public class VisionAlign extends Action {
     }
 
     public VisionAlign(double margin) {
-        requires(Robot.driveSystem);
-
-        mMargin = margin;
-        mRotateSpeed = 0.2;
+        this(margin, 0.2);
     }
 
     @Override
@@ -37,12 +34,12 @@ public class VisionAlign extends Action {
 
     @Override
     protected void execute() {
-        Robot.driveSystem.tankDrive(mRotateSpeed * Math.signum(setpoint), -mRotateSpeed * Math.signum(setpoint));
-    }
+        double rotVal = mRotateSpeed * Math.signum(setpoint);
 
-    @Override
-    protected boolean isFinished() {
-        return inRotationThreshold();
+        if (inRotationThreshold())
+            rotVal = 0;
+
+        Robot.driveSystem.arcadeDrive(0, rotVal);
     }
 
     private boolean inRotationThreshold() {
