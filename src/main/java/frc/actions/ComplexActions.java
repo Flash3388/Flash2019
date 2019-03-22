@@ -34,7 +34,7 @@ public class ComplexActions {
     }
     
     public static Action hatchDrive() {
-        return new ActionGroup().addSequential(new RotationPIDAction(1))
+        return new ActionGroup().addSequential(new RotateAction(1))
                 .addSequential(new SystemAction(new Action(){
                 
                     @Override
