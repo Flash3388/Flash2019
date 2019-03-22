@@ -5,20 +5,20 @@ import edu.flash3388.flashlib.robot.Action;
 
 import frc.robot.Robot;
 
-public class RotationPIDAction extends Action {
+public class RotateAction extends Action {
     private final double mMargin;
 
     private double setpoint;
     private double mRotateSpeed;
 
-    public RotationPIDAction(double margin, double rotateSpeed) {
+    public RotateAction(double margin, double rotateSpeed) {
         requires(Robot.driveSystem);
 
         mMargin = margin;
         mRotateSpeed = rotateSpeed;
     }
 
-    public RotationPIDAction(double margin) {
+    public RotateAction(double margin) {
         requires(Robot.driveSystem);
 
         mMargin = margin;
