@@ -28,6 +28,7 @@ import frc.time.Clock;
 import frc.time.FpgaClock;
 import frc.time.ntp.NtpServer;
 import frc.actions.TimeStampRecorder;
+import frc.actions.VisionAlign;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveSystem;
@@ -71,19 +72,6 @@ public class Robot extends IterativeFRCRobot {
 		
 		setupSystems();
 		setupButtons();
-
-		TimeStampRecorder r = new TimeStampRecorder();
-
-		for (int i = 0; i < 100; ++i) {
-			r.append(i * 10, i);
-		}
-
-		System.out.println(r.getCorrespondingAngle(50));
-		System.out.println(r.getCorrespondingAngle(51));
-
-		System.out.println(r.getCorrespondingAngle(26));
-		System.out.println(r.getCorrespondingAngle(72));
-
 	}
 
 	@Override
@@ -156,6 +144,7 @@ public class Robot extends IterativeFRCRobot {
 
 		righJoystick.getButton(2).whenPressed(new CancelAllCurrentRunningActionsAction(climbAction, autonomousClimb));
 		lefJoystick.getButton(1).whenPressed(ComplexActions.hatchDrive());
+		xbox.RB.whenPressed(new VisionAlign(0));
 		
 	}
 }
