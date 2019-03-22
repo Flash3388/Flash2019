@@ -22,6 +22,7 @@ import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
+import frc.actions.TimeStampRecorder;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveSystem;
@@ -53,8 +54,18 @@ public class Robot extends IterativeFRCRobot {
 		setupSystems();
 		setupButtons();
 
-		Compressor c = new Compressor();
-		c.stop();
+		TimeStampRecorder r = new TimeStampRecorder();
+
+		for (int i = 0; i < 100; ++i) {
+			r.append(i * 10, i);
+		}
+
+		System.out.println(r.getCorrespondingAngle(50));
+		System.out.println(r.getCorrespondingAngle(51));
+
+		System.out.println(r.getCorrespondingAngle(26));
+		System.out.println(r.getCorrespondingAngle(72));
+		
 	}
 
 	@Override

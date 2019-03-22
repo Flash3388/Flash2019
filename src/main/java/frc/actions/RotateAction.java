@@ -38,7 +38,7 @@ public class RotateAction extends Action {
 
     @Override
     protected void execute() {
-        Robot.driveSystem.tankDrive(mRotateSpeed*Math.signum(setpoint) , -mRotateSpeed *Math.signum(setpoint));
+        Robot.driveSystem.tankDrive(mRotateSpeed * Math.signum(setpoint), -mRotateSpeed * Math.signum(setpoint));
     }
 
     @Override

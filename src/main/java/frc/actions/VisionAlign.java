@@ -11,10 +11,7 @@ public class VisionAlign extends Action {
     private double mRotateSpeed;
 
     private TimeStampRecorder jhonson;
-
-    @Deprecated
-    private String str = "Alon";
-
+    
     public VisionAlign(double margin, double rotateSpeed) {
         requires(Robot.driveSystem);
 
