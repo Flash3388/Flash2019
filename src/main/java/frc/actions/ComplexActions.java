@@ -2,6 +2,8 @@ package frc.actions;
 
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
+import edu.flash3388.flashlib.robot.SystemAction;
+import frc.robot.Robot;
 
 public class ComplexActions {
 
@@ -28,7 +30,23 @@ public class ComplexActions {
 
     public static Action autonomousDriveToTarget(double distance, double angle) {
         return new ActionGroup().addSequential(new SmartDriveToTarget(5, distance, angle))
-                .addSequential(new TimedDriveAction(0.2, 0.5))
-                .addSequential(new EdwardAction());
+                .addSequential(new TimedDriveAction(0.2, 0.5)).addSequential(new EdwardAction());
+    }
+    
+    public static Action hatchDrive() {
+        return new ActionGroup().addSequential(new RotationPIDAction(1))
+                .addSequential(new SystemAction(new Action(){
+                
+                    @Override
+                    protected void execute() {
+                        double avg = (Robot.righJoystick.getY()+Robot.lefJoystick.getY()) /2;
+                        Robot.driveSystem.tankDrive(avg, avg);
+                    }
+                
+                    @Override
+                    protected void end() {
+                        
+                    }
+                }, Robot.driveSystem));
     }
 }

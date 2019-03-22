@@ -11,7 +11,8 @@ import edu.flash3388.flashlib.robot.systems.FlashDrive;
 import edu.flash3388.flashlib.robot.systems.TankDriveSystem;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import edu.flash3388.flashlib.util.beans.PropertyHandler;
-
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 import frc.robot.RobotMap;
@@ -35,6 +36,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     private final TalonSRX mRearLeft;
     private final TalonSRX mFrontLeft;
 
+    private final NetworkTableEntry angleEntry;
+
     public DriveSystem(int frontRight, int rearRight, int frontLeft, int rearLeft) {
         mFrontRight = new TalonSRX(frontRight);
         mRearRight = new TalonSRX(rearRight);
@@ -46,6 +49,8 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         
         mGyro = new ADXRS450_Gyro();
         mGyro.calibrate();
+
+        angleEntry = NetworkTableInstance.getDefault().getEntry("vision_angle");
 
         mRearRight.configFactoryDefault();
         mRearRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -165,5 +170,9 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
             return val2;
         else
             return val1;
+    }
+
+    public double getVisionAngle() {
+        return angleEntry.getDouble(0);
     }
 }

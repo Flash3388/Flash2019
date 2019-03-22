@@ -13,7 +13,9 @@ import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.actions.CancelAllCurrentRunningActionsAction;
+import frc.actions.ClimbDriveAction;
 import frc.actions.ComplexActions;
 import frc.actions.LiftBallMaxAction;
 import frc.subsystems.DriveSystem;
@@ -36,7 +38,7 @@ import frc.tables.TargetDataListener;
 import frc.tables.TargetDataTable;
 import frc.tables.TargetSelectTable;
 
-public class Robot extends IterativeFRCRobot implements TargetDataListener {
+public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveSystem;
 	public static ClimbSystem climbSystem;
 	public static HatchSystem hatchSystem;
@@ -49,10 +51,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	public static Joystick lefJoystick;
 
 	public static SuffleboardHandler pidHandler;
-
-	private List<TargetSelectAction> mTargetSelectActionList;
-	private TargetSelectTable mTargetSelectTable;
-	private TargetDataTable mTargetDataTable;
 
 	@Override
 	protected void preInit(RobotInitializer initializer) {
@@ -68,8 +66,10 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 		lefJoystick = new Joystick(2, 5);
 		
 		setupSystems();
-		setupTables();
 		setupButtons();
+
+		Compressor c = new Compressor();
+		c.stop();
 	}
 
 	@Override
@@ -99,30 +99,6 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	protected void autonomousPeriodic() {
 
 	}
-
-	@Override
-	public void onTargetData(TargetData targetData) {
-		new ActionGroup()
-				.addSequential(new RotationPIDAction(4, 0, targetData.getAngle()))
-				.addSequential(new TimedDriveAction(0.35, 2)).start();
-	}
-
-	private void setupTables() {
-		mTargetSelectActionList = new ArrayList<>();
-		mTargetSelectTable = new TargetSelectTable();
-		mTargetDataTable = new TargetDataTable();
-
-		for (int i = 0; i < TargetSelectTable.NUM_OF_POSSIBLE_TARGETS; i++) {
-			mTargetSelectActionList.add(new TargetSelectAction(mTargetSelectTable, i));
-		}
-		righJoystick.getButton(1).whenPressed(mTargetSelectActionList.get(0));
-		// xbox.A.whenPressed(mTargetSelectActionList.get(0));
-		// xbox.B.whenPressed(mTargetSelectActionList.get(1));
-		// xbox.X.whenPressed(mTargetSelectActionList.get(2));
-
-		mTargetDataTable.registerTargetDataListener(this);
-
-	}
 	
 	private void setupSystems() {
 		driveSystem = new DriveSystem(RobotMap.FRONT_RIGHT_MOTOR, RobotMap.REAR_RIGHT_MOTOR, RobotMap.FRONT_LEFT_MOTOR,
@@ -146,20 +122,16 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 	}
 	
 	private void setupButtons() {
-		xbox.Y.whenPressed(new EdwardAction());
+		righJoystick.getButton(1).whenPressed(new EdwardAction());
 
 		Action climbAction = ComplexActions.climbDriveAction();
 		xbox.Start.whenPressed(climbAction);
 
-		xbox.DPad.getUp().whenPressed(new TimedLiftAction(RobotMap.CARGO_SHIP_BALL));
-		xbox.DPad.getUp().whenMultiPressed(new TimedLiftAction(RobotMap.ROCKET_BALL_ONE), 2);
-		xbox.DPad.getUp().whenMultiPressed(new LiftBallMaxAction(), 3);
-		xbox.DPad.getDown().whenPressed(new TimedLiftAction(RobotMap.ROCKET_HATCH_ONE));
+		xbox.DPad.getUp().whenPressed(new ClimbDriveAction());
 
 		Action autonomousClimb = ComplexActions.autonomousClimbAction();
-		xbox.DPad.getLeft().whenPressed(autonomousClimb);
 
-		xbox.DPad.getRight().whenPressed(new InstantAction(){
+		lefJoystick.getButton(2).whenPressed(new InstantAction(){
 		
 			@Override
 			protected void execute() {
@@ -168,7 +140,8 @@ public class Robot extends IterativeFRCRobot implements TargetDataListener {
 			}
 		});
 
-		xbox.Back.whenPressed(new CancelAllCurrentRunningActionsAction(climbAction,autonomousClimb));
+		righJoystick.getButton(2).whenPressed(new CancelAllCurrentRunningActionsAction(climbAction, autonomousClimb));
+		lefJoystick.getButton(1).whenPressed(ComplexActions.hatchDrive());
 		
 	}
 }

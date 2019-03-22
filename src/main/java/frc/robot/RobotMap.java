@@ -35,7 +35,7 @@ public class RobotMap {
     public static final double FALL_SPEED = -0.45;
     public static final double STALL_SPEED = 0.075;
 
-    public static final double CARGO_SHIP_BALL = 1.9;
+    public static final double CARGO_SHIP_BALL = 1.3;
     public static final double ROCKET_BALL_ONE = 1.0;
     public static final double ROCKET_HATCH_ONE = 1.8;
 

@@ -13,5 +13,6 @@ public class EdwardAction extends InstantAction{
     @Override
     protected void execute() {
         Robot.hatchSystem.toggle();
+        Robot.driveSystem.cancelCurrentAction();
     }
 }
