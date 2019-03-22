@@ -1,5 +1,8 @@
 package frc.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
@@ -10,11 +13,15 @@ public class VisionAlign extends Action {
     private double setpoint;
     private double mRotateSpeed;
 
+    private List<> angles;
+
     public VisionAlign(double margin, double rotateSpeed) {
         requires(Robot.driveSystem);
 
         mMargin = margin;
         mRotateSpeed = rotateSpeed;
+
+        angles = new ArrayList<>()
     }
 
     public VisionAlign(double margin) {
