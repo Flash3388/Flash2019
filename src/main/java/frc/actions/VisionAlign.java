@@ -19,6 +19,8 @@ public class VisionAlign extends Action {
 
     @Override
     protected void initialize() {
+        Robot.cameraExposure.set(20);
+
         Robot.driveSystem.resetGyro();
         Robot.driveSystem.rotatePID.reset();
         Robot.driveSystem.rotatePID.setEnabled(true);
@@ -28,6 +30,7 @@ public class VisionAlign extends Action {
     @Override
     protected void end() {
         Robot.driveSystem.stop();
+        Robot.cameraExposure.set(46);
     }
 
     @Override

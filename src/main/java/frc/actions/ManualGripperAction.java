@@ -4,6 +4,7 @@ import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
 
 public class ManualGripperAction extends Action {
+
     public ManualGripperAction() {
         requires(Robot.rollerGripperSystem);
     }
@@ -13,7 +14,9 @@ public class ManualGripperAction extends Action {
         double speed = Robot.xbox.RightStick.AxisY.get();
 
         if (Math.abs(speed) < 0.2) {
-            Robot.rollerGripperSystem.stop();
+            if (Math.abs(Robot.rollerGripperSystem.getCurrentSpeed()) > 0.05) {
+                cancel();
+            }
             return;
         }
 
@@ -26,6 +29,6 @@ public class ManualGripperAction extends Action {
 
     @Override
     protected void end() {
-        Robot.rollerGripperSystem.stop();
+        Robot.rollerGripperSystem.startSlowStop();
     }
 }

@@ -24,7 +24,7 @@ public class RobotMap {
     public static final int HATCH_GRIPPER_CHANNEL_BACKWARD = 4;
 
     public static final int ROLLER_GRIPPER_MOTOR = 7;
-    public static final double CAPTURE_SPEED = -0.35;
+    public static final double CAPTURE_SPEED = -0.8;
     public static final double RELEASE_SPEED = 0.6;
 
     public static final int RIGHT_LIFT_MOTOR = 9;
@@ -56,5 +56,8 @@ public class RobotMap {
     public static final double WHEEL_DIAMETER = 15.24;
     public static final double PPR = 4096.0;
     public static final double REVERSE_PPR = 1.0/PPR;
+
+    public static final double GRIPPER_STOP_SPEED_DECLINE = 0.01;
+    public static final double GRIPPER_STOP_SPEED_MARGIN = 0.01;
 
 }
