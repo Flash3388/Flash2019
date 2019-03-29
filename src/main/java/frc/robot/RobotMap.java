@@ -40,7 +40,7 @@ public class RobotMap {
     public static final double ROCKET_HATCH_ONE = 1.8;
 
     public static final double DRIVE_LIMIT = 1.0;
-    public static final double ROTATE_LIMIT = 1.0;
+    public static final double ROTATE_LIMIT = 0.2;
 
     public static final int[] ANGLE_SET = {-180, -151, -90, -61, 0, 61, 90, 151, 180};
     public static final double TURNING_RATIO_RIGHT = -0.31;
