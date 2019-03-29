@@ -7,6 +7,7 @@ import edu.flash3388.flashlib.robot.RobotFactory;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
+import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
@@ -28,6 +29,7 @@ import frc.time.Clock;
 import frc.time.FpgaClock;
 import frc.time.ntp.NtpServer;
 import frc.actions.TimeStampRecorder;
+import frc.vision.CameraExposureProperty;
 
 public class Robot extends IterativeFRCRobot {
 	public static DriveSystem driveSystem;
@@ -47,6 +49,8 @@ public class Robot extends IterativeFRCRobot {
 
 	private NtpServer ntpServer;
 
+	public static DoubleProperty cameraExposure;
+
     @Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
@@ -55,6 +59,8 @@ public class Robot extends IterativeFRCRobot {
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+
+		cameraExposure = new CameraExposureProperty();
 
         clock = new FpgaClock();
 
