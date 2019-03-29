@@ -11,6 +11,7 @@ import edu.flash3388.flashlib.robot.systems.FlashDrive;
 import edu.flash3388.flashlib.robot.systems.TankDriveSystem;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 import edu.flash3388.flashlib.util.beans.PropertyHandler;
+import edu.flash3388.flashlib.util.beans.SimpleDoubleProperty;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -28,6 +29,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     
     public DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
     public DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
+    public DoubleProperty currectRotationSource = new SimpleDoubleProperty();
 
     private final ADXRS450_Gyro mGyro;
 
@@ -37,6 +39,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     private final TalonSRX mFrontLeft;
 
     private final NetworkTableEntry angleEntry;
+    private final NetworkTableEntry timeEntry;
 
     public DriveSystem(int frontRight, int rearRight, int frontLeft, int rearLeft) {
         mFrontRight = new TalonSRX(frontRight);
@@ -51,6 +54,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         mGyro.calibrate();
 
         angleEntry = NetworkTableInstance.getDefault().getEntry("vision_angle");
+        timeEntry = NetworkTableInstance.getDefault().getEntry("vision_time");
 
         mRearRight.configFactoryDefault();
         mRearRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -92,13 +96,13 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
             @Override
             public double pidGet() {
-                return getAngle();
+                return currectRotationSource.get();
             }
         };
 
         distancePID = new PIDController(0.04, 0.0, 0.0, 0.0, distanceSetPoint, distancSource);
         distancePID.setOutputLimit(-RobotMap.DRIVE_LIMIT, RobotMap.DRIVE_LIMIT);
-        rotatePID = new PIDController(0.04, 0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
+        rotatePID = new PIDController(0.1, 0.0, 0.0, 0.0, rotationSetPoint, rotationSource);
         rotatePID.setOutputLimit(-RobotMap.ROTATE_LIMIT, RobotMap.ROTATE_LIMIT);
     }
 
@@ -174,5 +178,9 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     public double getVisionAngle() {
         return angleEntry.getDouble(0);
+    }
+
+    public long getVisionTime() {
+        return (long)timeEntry.getDouble(-1);
     }
 }

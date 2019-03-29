@@ -7,28 +7,22 @@ import frc.robot.Robot;
 public class VisionAlign extends Action {
     private final double mMargin;
 
-    private double setpoint;
-    private double mRotateSpeed;
-
     private TimeStampRecorder jhonson;
     
-    public VisionAlign(double margin, double rotateSpeed) {
+    public VisionAlign(double margin) {
         requires(Robot.driveSystem);
 
         mMargin = margin;
-        mRotateSpeed = rotateSpeed;
 
         jhonson = new TimeStampRecorder();
-    }
-
-    public VisionAlign(double margin) {
-        this(margin, 0.2);
     }
 
     @Override
     protected void initialize() {
         Robot.driveSystem.resetGyro();
-        setpoint = Robot.driveSystem.getVisionAngle();
+        Robot.driveSystem.rotatePID.reset();
+        Robot.driveSystem.rotatePID.setEnabled(true);
+        Robot.driveSystem.rotationSetPoint.set(0);
     }
 
     @Override
@@ -38,16 +32,30 @@ public class VisionAlign extends Action {
 
     @Override
     protected void execute() {
-        double rotVal = mRotateSpeed * Math.signum(setpoint);
+        jhonson.append(Robot.clock.currentTimeMillis(), Robot.driveSystem.getAngle());
 
+        double jhonsonAngle = jhonson.getAngleAt(Robot.driveSystem.getVisionTime());
+        double distance = distance(Robot.driveSystem.getAngle(), jhonsonAngle);
+
+        double setpoint = Robot.driveSystem.getVisionAngle() - distance;
+                
+        Robot.driveSystem.currectRotationSource.set(setpoint);
+        double rotVal = Robot.driveSystem.rotatePID.calculate();
+        System.out.println();
         if (inRotationThreshold())
             rotVal = 0;
 
-        Robot.driveSystem.arcadeDrive(0, rotVal);
+        Robot.driveSystem.arcadeDrive((Robot.righJoystick.getY()+Robot.lefJoystick.getY())/2,-rotVal);
     }
 
     private boolean inRotationThreshold() {
         double current = Robot.driveSystem.rotatePID.getPIDSource().pidGet();
-        return Mathf.constrained(setpoint - current, -mMargin, mMargin);
+        return Mathf.constrained(current, -mMargin, mMargin);
+    }
+
+    private static double distance(double alpha, double beta) {
+        double phi = Math.abs(beta - alpha) % 360; 
+        double distance = phi > 180 ? 360 - phi : phi;
+        return distance;
     }
 }

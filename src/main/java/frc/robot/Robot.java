@@ -8,23 +8,26 @@ import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+
 import frc.actions.CancelAllCurrentRunningActionsAction;
 import frc.actions.ClimbDriveAction;
 import frc.actions.ComplexActions;
+import frc.actions.EdwardAction;
+import frc.actions.ManualGripperAction;
+import frc.actions.ManualLiftAction;
+import frc.actions.OperatorDriveAction;
+import frc.actions.VisionAlign;
+
 import frc.subsystems.DriveSystem;
 import frc.subsystems.HatchSystem;
 import frc.subsystems.LiftSystem;
 import frc.subsystems.RollerGripperSystem;
 import frc.subsystems.ClimbSystem;
 
-import frc.actions.EdwardAction;
-import frc.actions.ManualGripperAction;
-import frc.actions.ManualLiftAction;
-import frc.actions.OperatorDriveAction;
 import frc.time.Clock;
 import frc.time.FpgaClock;
 import frc.time.ntp.NtpServer;
@@ -77,19 +80,6 @@ public class Robot extends IterativeFRCRobot {
 		
 		setupSystems();
 		setupButtons();
-
-		TimeStampRecorder r = new TimeStampRecorder();
-
-		for (int i = 0; i < 100; ++i) {
-			r.append(i * 10, i);
-		}
-
-		System.out.println(r.getCorrespondingAngle(50));
-		System.out.println(r.getCorrespondingAngle(51));
-
-		System.out.println(r.getCorrespondingAngle(26));
-		System.out.println(r.getCorrespondingAngle(72));
-
 	}
 
 	@Override
@@ -152,7 +142,6 @@ public class Robot extends IterativeFRCRobot {
 		Action autonomousClimb = ComplexActions.autonomousClimbAction();
 
 		lefJoystick.getButton(2).whenPressed(new InstantAction(){
-		
 			@Override
 			protected void execute() {
 				Robot.climbSystem.closeBack();
@@ -161,7 +150,6 @@ public class Robot extends IterativeFRCRobot {
 		});
 
 		righJoystick.getButton(2).whenPressed(new CancelAllCurrentRunningActionsAction(climbAction, autonomousClimb));
-		lefJoystick.getButton(1).whenPressed(ComplexActions.hatchDrive());
-		
+		lefJoystick.getButton(1).whenPressed(new VisionAlign(1));
 	}
 }
