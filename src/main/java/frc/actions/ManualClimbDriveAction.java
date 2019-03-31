@@ -11,9 +11,9 @@ public class ManualClimbDriveAction extends Action{
 
     @Override
     protected void execute() {
-        double speed = Robot.xbox.LeftStick.getY() * 0.8;
+        double speed = Robot.xbox.LeftStick.getY() * 0.5;
 
-        if (speed < -0.16)
+        if (speed < -0.1)
             Robot.climbSystem.drive(-speed);
         else
             Robot.climbSystem.stop();
@@ -22,6 +22,11 @@ public class ManualClimbDriveAction extends Action{
     @Override
     protected void end() {
         Robot.climbSystem.stop();
+        Robot.climbSystem.closeBack();
     }
 
+    @Override
+    protected boolean isFinished() {
+        return Robot.climbSystem.isDrove();
+    }
 }
