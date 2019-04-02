@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class MaxSonarAnalogSonic implements RangeFinder {
 
+    // might vary
     private static final double MVOLTAGE_TO_MM = 4.88 / 5.0;
 
     private AnalogInput mAnalogInput;
