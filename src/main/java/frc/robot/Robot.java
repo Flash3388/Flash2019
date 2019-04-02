@@ -1,9 +1,11 @@
 package frc.robot;
 
 import edu.flash3388.flashlib.FRCHIDInterface;
+import edu.flash3388.flashlib.HIDUpdateTask;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.InstantAction;
 import edu.flash3388.flashlib.robot.RobotFactory;
+import edu.flash3388.flashlib.robot.Scheduler;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
@@ -14,7 +16,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.actions.CancelAllCurrentRunningActionsAction;
-import frc.actions.ClimbDriveAction;
 import frc.actions.ComplexActions;
 import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
@@ -31,7 +32,6 @@ import frc.subsystems.ClimbSystem;
 import frc.time.Clock;
 import frc.time.FpgaClock;
 import frc.time.ntp.NtpServer;
-import frc.actions.TimeStampRecorder;
 import frc.vision.CameraExposureProperty;
 
 public class Robot extends IterativeFRCRobot {
@@ -57,11 +57,13 @@ public class Robot extends IterativeFRCRobot {
     @Override
 	protected void preInit(RobotInitializer initializer) {
 		initializer.initFlashboard = false;
+		initializer.autoUpdateHid = false;
 	}
 
 	@Override
 	protected void initRobot() {
 		RobotFactory.setHIDInterface(new FRCHIDInterface(DriverStation.getInstance()));
+        Scheduler.getInstance().addTask(new HIDUpdateTask());
 
 		cameraExposure = new CameraExposureProperty();
 
@@ -137,11 +139,37 @@ public class Robot extends IterativeFRCRobot {
 		Action climbAction = ComplexActions.climbDriveAction();
 		xbox.Start.whenPressed(climbAction);
 
-		xbox.DPad.getUp().whenPressed(new ClimbDriveAction());
+		xbox.DPad.getUp().whenPressed(new Action() {
+            {
+                requires(climbSystem);
+            }
+
+            @Override
+            protected void initialize() {
+                climbSystem.closeFront();
+            }
+
+            @Override
+            protected void execute() {
+            }
+
+            @Override
+            protected void end() {
+                climbSystem.closeBack();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return climbSystem.isDrove();
+            }
+        });
 
 		Action autonomousClimb = ComplexActions.autonomousClimbAction();
 
-		lefJoystick.getButton(2).whenPressed(new InstantAction(){
+		lefJoystick.getButton(2).whenPressed(new InstantAction() {
+            {
+                requires(climbSystem);
+            }
 			@Override
 			protected void execute() {
 				Robot.climbSystem.closeBack();

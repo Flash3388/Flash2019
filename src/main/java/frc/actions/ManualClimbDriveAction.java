@@ -22,11 +22,5 @@ public class ManualClimbDriveAction extends Action{
     @Override
     protected void end() {
         Robot.climbSystem.stop();
-        Robot.climbSystem.closeBack();
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return Robot.climbSystem.isDrove();
     }
 }
