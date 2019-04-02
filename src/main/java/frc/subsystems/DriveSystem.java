@@ -40,6 +40,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     private final NetworkTableEntry angleEntry;
     private final NetworkTableEntry timeEntry;
+    private final NetworkTableEntry distanceEntry;
 
     public DriveSystem(int frontRight, int rearRight, int frontLeft, int rearLeft) {
         mFrontRight = new TalonSRX(frontRight);
@@ -55,6 +56,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
         angleEntry = NetworkTableInstance.getDefault().getEntry("vision_angle");
         timeEntry = NetworkTableInstance.getDefault().getEntry("vision_time");
+        distanceEntry = NetworkTableInstance.getDefault().getEntry("vision_distance");
 
         mRearRight.configFactoryDefault();
         mRearRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -182,5 +184,9 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
 
     public long getVisionTime() {
         return (long)timeEntry.getDouble(-1);
+    }
+
+    public double getVisionDistanceCm() {
+        return distanceEntry.getDouble(0);
     }
 }

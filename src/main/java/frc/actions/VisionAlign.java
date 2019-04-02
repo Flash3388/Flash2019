@@ -3,11 +3,14 @@ package frc.actions;
 import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class VisionAlign extends Action {
     private final double mMargin;
 
     private TimeStampRecorder jhonson;
+
+    private double mInitialDistanceToTarget;
     
     public VisionAlign(double margin) {
         requires(Robot.driveSystem);
@@ -25,12 +28,16 @@ public class VisionAlign extends Action {
         Robot.driveSystem.rotatePID.reset();
         Robot.driveSystem.rotatePID.setEnabled(true);
         Robot.driveSystem.rotationSetPoint.set(0);
+
+        mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM;
+        Robot.driveSystem.resetDistance();
     }
 
     @Override
     protected void end() {
         Robot.driveSystem.stop();
         Robot.cameraExposure.set(46);
+        Robot.hatchSystem.toggle();
     }
 
     @Override
@@ -49,6 +56,12 @@ public class VisionAlign extends Action {
             rotVal = 0;
 
         Robot.driveSystem.arcadeDrive((Robot.righJoystick.getY()+Robot.lefJoystick.getY())/2,-rotVal);
+    }
+
+    @Override
+    protected boolean isFinished() {
+        double distancePassed = (Robot.driveSystem.getLeftDistance() + Robot.driveSystem.getRightDistance()) * 0.5;
+        return distancePassed >= mInitialDistanceToTarget;
     }
 
     private boolean inRotationThreshold() {

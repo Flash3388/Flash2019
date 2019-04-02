@@ -60,4 +60,6 @@ public class RobotMap {
     public static final double GRIPPER_STOP_SPEED_DECLINE = 0.01;
     public static final double GRIPPER_STOP_SPEED_MARGIN = 0.01;
 
+
+    public static final double CAMERA_DISTANCE_FROM_FRONT_CM = 20.0; // TODO: CHECK
 }
