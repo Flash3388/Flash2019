@@ -3,6 +3,8 @@ package frc.actions;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.SystemAction;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Robot;
 
 public class ComplexActions {
@@ -26,6 +28,44 @@ public class ComplexActions {
     public static Action climbDriveAction() {
         return new ActionGroup().addSequential(climbAction())
                 .addSequential(new ManualClimbDriveAction());
+    }
+
+    public static Action visionAlign() {
+        return new ActionGroup()
+                .addSequential(new Action() {
+                    NetworkTableEntry mRunEntry = NetworkTableInstance.getDefault().getEntry("vision_run");
+                    NetworkTableEntry mWaitEntry = NetworkTableInstance.getDefault().getEntry("vision_wait");
+
+                    @Override
+                    protected void initialize() {
+                        System.out.println("Start");
+                        Robot.driveSystem.resetDistance();
+                        Robot.cameraExposure.set(20);
+                        mWaitEntry.setDouble(0);
+                        mRunEntry.setBoolean(true);
+                    }
+
+                    @Override
+                    protected void execute() {
+                    }
+
+                    @Override
+                    protected boolean isFinished() {
+                        return mWaitEntry.getDouble(0) > 10;
+                    }
+
+                    @Override
+                    protected void interrupted() {
+                        end();
+                        mRunEntry.setBoolean(false);
+                        Robot.cameraExposure.set(46);
+                    }
+
+                    @Override
+                    protected void end() {
+                    }
+                })
+                .addSequential(new VisionAlign(1.0));
     }
 
     public static Action autonomousDriveToTarget(double distance, double angle) {

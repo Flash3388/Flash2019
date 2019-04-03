@@ -21,6 +21,7 @@ import frc.actions.EdwardAction;
 import frc.actions.ManualGripperAction;
 import frc.actions.ManualLiftAction;
 import frc.actions.OperatorDriveAction;
+import frc.actions.TimedLiftAction;
 import frc.actions.VisionAlign;
 
 import frc.subsystems.DriveSystem;
@@ -177,7 +178,11 @@ public class Robot extends IterativeFRCRobot {
 			}
 		});
 
-		righJoystick.getButton(2).whenPressed(new CancelAllCurrentRunningActionsAction(climbAction, autonomousClimb));
-		lefJoystick.getButton(1).whenPressed(new VisionAlign(1));
+		Action complexVisionAlign = ComplexActions.visionAlign();
+
+		righJoystick.getButton(2).whenPressed(new CancelAllCurrentRunningActionsAction(climbAction, autonomousClimb, complexVisionAlign));
+		lefJoystick.getButton(1).whenPressed(complexVisionAlign);//new VisionAlign(1));
+
+		xbox.Y.whenPressed(new TimedLiftAction(RobotMap.CARGO_SHIP_BALL));
 	}
 }

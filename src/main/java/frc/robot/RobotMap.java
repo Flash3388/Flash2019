@@ -35,12 +35,12 @@ public class RobotMap {
     public static final double FALL_SPEED = -0.45;
     public static final double STALL_SPEED = 0.075;
 
-    public static final double CARGO_SHIP_BALL = 1.3;
+    public static final double CARGO_SHIP_BALL = 1.5;
     public static final double ROCKET_BALL_ONE = 1.0;
     public static final double ROCKET_HATCH_ONE = 1.8;
 
     public static final double DRIVE_LIMIT = 1.0;
-    public static final double ROTATE_LIMIT = 0.2;
+    public static final double ROTATE_LIMIT = 0.15;
 
     public static final int[] ANGLE_SET = {-180, -151, -90, -61, 0, 61, 90, 151, 180};
     public static final double TURNING_RATIO_RIGHT = -0.31;
@@ -61,5 +61,5 @@ public class RobotMap {
     public static final double GRIPPER_STOP_SPEED_MARGIN = 0.01;
 
 
-    public static final double CAMERA_DISTANCE_FROM_FRONT_CM = 20.0; // TODO: CHECK
+    public static final double CAMERA_DISTANCE_FROM_FRONT_CM = 20;
 }

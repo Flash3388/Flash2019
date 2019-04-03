@@ -11,6 +11,7 @@ public class HatchSystem extends Subsystem {
 
     public void toggle(){
         mPiston.toggle();
+        System.out.println("Toggling bitch");
     }
 
     public void grab() {

@@ -2,6 +2,8 @@ package frc.actions;
 
 import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -11,6 +13,7 @@ public class VisionAlign extends Action {
     private TimeStampRecorder jhonson;
 
     private double mInitialDistanceToTarget;
+    //private double mStartTimeSeconds;
     
     public VisionAlign(double margin) {
         requires(Robot.driveSystem);
@@ -22,15 +25,17 @@ public class VisionAlign extends Action {
 
     @Override
     protected void initialize() {
-        Robot.cameraExposure.set(20);
+        //mStartTimeSeconds = Timer.getFPGATimestamp();
+        //Robot.cameraExposure.set(20);
 
         Robot.driveSystem.resetGyro();
         Robot.driveSystem.rotatePID.reset();
         Robot.driveSystem.rotatePID.setEnabled(true);
         Robot.driveSystem.rotationSetPoint.set(0);
 
-        mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM;
-        Robot.driveSystem.resetDistance();
+        mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM; //Robot.driveSystem.getVisionDistanceCm()
+        NetworkTableInstance.getDefault().getEntry("testinitial").setDouble(mInitialDistanceToTarget);
+        //Robot.driveSystem.resetDistance();
     }
 
     @Override
@@ -38,10 +43,15 @@ public class VisionAlign extends Action {
         Robot.driveSystem.stop();
         Robot.cameraExposure.set(46);
         Robot.hatchSystem.toggle();
+        System.out.println("Done");
     }
 
     @Override
     protected void execute() {
+        /*if (Timer.getFPGATimestamp() - mStartTimeSeconds <= 0.1) {
+            mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM;
+        }*/
+
         jhonson.append(Robot.clock.currentTimeMillis(), Robot.driveSystem.getAngle());
 
         double jhonsonAngle = jhonson.getAngleAt(Robot.driveSystem.getVisionTime());
@@ -61,6 +71,8 @@ public class VisionAlign extends Action {
     @Override
     protected boolean isFinished() {
         double distancePassed = (Robot.driveSystem.getLeftDistance() + Robot.driveSystem.getRightDistance()) * 0.5;
+        //System.out.println(mInitialDistanceToTarget + "|" + distancePassed);
+        NetworkTableInstance.getDefault().getEntry("testdistance").setDouble(distancePassed);
         return distancePassed >= mInitialDistanceToTarget;
     }
 
