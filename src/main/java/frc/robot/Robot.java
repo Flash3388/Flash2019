@@ -9,8 +9,10 @@ import edu.flash3388.flashlib.robot.Scheduler;
 import edu.flash3388.flashlib.robot.frc.IterativeFRCRobot;
 import edu.flash3388.flashlib.robot.hid.Joystick;
 import edu.flash3388.flashlib.robot.hid.XboxController;
+import edu.flash3388.flashlib.util.beans.BooleanProperty;
 import edu.flash3388.flashlib.util.beans.DoubleProperty;
 
+import edu.flash3388.flashlib.util.beans.SimpleBooleanProperty;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -54,6 +56,7 @@ public class Robot extends IterativeFRCRobot {
 	private NtpServer ntpServer;
 
 	public static DoubleProperty cameraExposure;
+	public static BooleanProperty visionClose;
 
     @Override
 	protected void preInit(RobotInitializer initializer) {
@@ -67,6 +70,8 @@ public class Robot extends IterativeFRCRobot {
         Scheduler.getInstance().addTask(new HIDUpdateTask());
 
 		cameraExposure = new CameraExposureProperty();
+		visionClose = new SimpleBooleanProperty();
+		visionClose.set(true);
 
         clock = new FpgaClock();
 
@@ -184,5 +189,11 @@ public class Robot extends IterativeFRCRobot {
 		lefJoystick.getButton(1).whenPressed(complexVisionAlign);//new VisionAlign(1));
 
 		xbox.Y.whenPressed(new TimedLiftAction(RobotMap.CARGO_SHIP_BALL));
+		lefJoystick.getButton(3).whenPressed(new InstantAction() {
+            @Override
+            protected void execute() {
+                visionClose.set(false);
+            }
+        });
 	}
 }

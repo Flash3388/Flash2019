@@ -43,7 +43,8 @@ public class VisionAlign extends Action {
     protected void end() {
         Robot.driveSystem.stop();
         Robot.cameraExposure.set(46);
-        Robot.hatchSystem.toggle();
+        if(Robot.visionClose.get())
+            Robot.hatchSystem.toggle();
         System.out.println("Done");
     }
 
