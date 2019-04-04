@@ -63,6 +63,8 @@ public class ComplexActions {
 
                     @Override
                     protected void end() {
+                        System.out.println("Done");
+                        mRunEntry.setBoolean(false);
                     }
                 })
                 .addSequential(new VisionAlign(1.0));
