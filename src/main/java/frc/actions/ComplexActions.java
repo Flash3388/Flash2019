@@ -1,11 +1,13 @@
 package frc.actions;
 
+import edu.flash3388.flashlib.math.Mathf;
 import edu.flash3388.flashlib.robot.Action;
 import edu.flash3388.flashlib.robot.ActionGroup;
 import edu.flash3388.flashlib.robot.SystemAction;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Robot;
+import frc.subsystems.DriveSystem;
 
 public class ComplexActions {
 
@@ -51,7 +53,7 @@ public class ComplexActions {
 
                     @Override
                     protected boolean isFinished() {
-                        return mWaitEntry.getDouble(0) > 10;
+                        return mWaitEntry.getDouble(0) > 5;
                     }
 
                     @Override
@@ -63,6 +65,40 @@ public class ComplexActions {
 
                     @Override
                     protected void end() {
+                    }
+                })
+                .addSequential(new Action() {
+                    double[] distances;
+                    double prev;
+                    int count;
+
+                    @Override
+                    protected void initialize() {
+                        distances = new double[5];
+                        count = 0;
+                        prev = 0;
+                    }
+
+                    @Override
+                    protected void execute() {
+                        double curr = Robot.driveSystem.getVisionDistanceCm();
+
+                        if(prev == 0 ||  curr != prev) {
+                            distances[count] = curr;
+                            prev = curr;
+                            count++;
+                        }
+                    }
+
+                    @Override
+                    protected void end() {
+                        double avg = Mathf.avg(distances);
+                        Robot.driveSystem.alignDistance.set(DriveSystem.findClosest(distances,avg));
+                    }
+
+                    @Override
+                    protected boolean isFinished() {
+                        return count > 5;
                     }
                 })
                 .addSequential(new VisionAlign(1.0));

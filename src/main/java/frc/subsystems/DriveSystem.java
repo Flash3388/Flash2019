@@ -30,6 +30,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
     public DoubleProperty distanceSetPoint = PropertyHandler.putNumber(DISTANCE_NAME, 0.0);
     public DoubleProperty rotationSetPoint = PropertyHandler.putNumber(ROTATION_NAME, 0.0);
     public DoubleProperty currectRotationSource = new SimpleDoubleProperty();
+    public DoubleProperty alignDistance = new SimpleDoubleProperty();
 
     private final ADXRS450_Gyro mGyro;
 
@@ -145,7 +146,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
        mGyro.reset();
     }
 
-    public static int findClosest(int[] arr, int target) {
+    public static double findClosest(double[] arr, double target) {
         if (target <= arr[0])
             return arr[0];
         if (target >= arr[arr.length - 1])
@@ -171,7 +172,7 @@ public class DriveSystem extends Subsystem implements TankDriveSystem {
         return arr[mid];
     }
 
-    private static int getClosest(int val1, int val2, int target) {
+    private static double getClosest(double val1, double val2, double target) {
         if (target - val1 >= val2 - target)
             return val2;
         else

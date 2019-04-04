@@ -33,7 +33,8 @@ public class VisionAlign extends Action {
         Robot.driveSystem.rotatePID.setEnabled(true);
         Robot.driveSystem.rotationSetPoint.set(0);
 
-        mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM; //Robot.driveSystem.getVisionDistanceCm()
+        //mInitialDistanceToTarget = Robot.driveSystem.getVisionDistanceCm() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM; //Robot.driveSystem.getVisionDistanceCm()
+        mInitialDistanceToTarget = Robot.driveSystem.alignDistance.get() - RobotMap.CAMERA_DISTANCE_FROM_FRONT_CM;
         NetworkTableInstance.getDefault().getEntry("testinitial").setDouble(mInitialDistanceToTarget);
         //Robot.driveSystem.resetDistance();
     }
