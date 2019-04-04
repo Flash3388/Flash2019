@@ -100,7 +100,7 @@ public class ComplexActions {
 
                     @Override
                     protected boolean isFinished() {
-                        return count > 5;
+                        return count >= 5;
                     }
                 })
                 .addSequential(new VisionAlign(1.0));
